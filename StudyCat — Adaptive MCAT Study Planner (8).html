@@ -1,0 +1,1255 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>StudyCat — Adaptive MCAT Study Planner</title>
+<meta name="description" content="Turn your MCAT date, study hours, and resources into a day-by-day plan that adapts when life happens.">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600&family=Figtree:wght@400;500;600&family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap">
+<style>
+:root{
+  --bg:#f7f8fb;--surface:#fff;--ink:#1b2236;--muted:#5d667c;--line:#e2e6ee;--accent:#3b5bdb;--accent-ink:#fff;--soft:#eaeefc;
+  --kaplan:#3b82f6;--uworld:#10b981;--aamc:#8b5cf6;--fl:#ef4444;--flr:#f59e0b;--anki:#ec4899;--cars:#0ea5e9;--weak:#f97316;--rest:#94a3b8;
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10141f;--surface:#181e2e;--ink:#eef1f8;--muted:#9aa4bb;--line:#2a3247;--accent:#7f9bff;--accent-ink:#0b1020;--soft:#1f2745}}
+:root[data-theme="dark"]{--bg:#10141f;--surface:#181e2e;--ink:#eef1f8;--muted:#9aa4bb;--line:#2a3247;--accent:#7f9bff;--accent-ink:#0b1020;--soft:#1f2745}
+html{scroll-behavior:smooth;scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Inter,system-ui,sans-serif}
+h1,h2,h3{font-family:Fraunces,Georgia,serif;font-weight:600;line-height:1.1;margin:0;letter-spacing:-.01em}
+h1{font-size:clamp(2.4rem,6vw,4.2rem)}h2{font-size:clamp(1.7rem,3.4vw,2.4rem)}
+p{margin:0}a{color:inherit;text-decoration:none}
+a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+.wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;align-items:center;gap:28px;height:64px}
+.logo{font-family:Fraunces,serif;font-weight:600;font-size:1.35rem;margin-right:auto}
+nav .links{display:flex;gap:22px;color:var(--muted);font-size:.95rem}
+nav .links a:hover{color:var(--ink)}
+.btn{display:inline-block;padding:11px 20px;border-radius:10px;font-weight:600;font-size:.95rem;border:1px solid var(--line);background:var(--surface)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn.lg{padding:14px 26px;font-size:1rem}
+section{padding:84px 0}
+.hero{padding:72px 0 60px}
+.hero .grid{display:grid;grid-template-columns:1fr 1.05fr;gap:48px;align-items:center}
+.hero p.lead{color:var(--muted);font-size:1.15rem;margin:20px 0 28px;max-width:34em}
+.cta{display:flex;gap:12px;flex-wrap:wrap}
+.note{color:var(--muted);font-size:.88rem;margin-top:14px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:22px}
+.week-head{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:6px}
+.week-head h3{font-size:1.25rem}.week-head span{color:var(--muted);font-size:.88rem}
+.stats{display:flex;gap:26px;margin:16px 0}
+.stats b{font-family:Fraunces,serif;font-size:1.6rem;display:block;line-height:1}
+.stats small{color:var(--muted)}
+.days{display:grid;gap:8px}
+.day{display:grid;grid-template-columns:52px 1fr;gap:10px;align-items:start;padding:8px 0;border-top:1px solid var(--line)}
+.day .d{font-size:.8rem;color:var(--muted);line-height:1.2}.day .d b{display:block;color:var(--ink);font-size:1.05rem}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-size:.78rem;padding:3px 9px;border-radius:99px;border:1px solid transparent;color:var(--ink);background:color-mix(in srgb,var(--c) 16%,var(--surface));border-color:color-mix(in srgb,var(--c) 40%,transparent)}
+.chip::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--c);margin-right:6px}
+.k{--c:var(--kaplan)}.u{--c:var(--uworld)}.a{--c:var(--aamc)}.f{--c:var(--fl)}.fr{--c:var(--flr)}.an{--c:var(--anki)}.c{--c:var(--cars)}.w{--c:var(--weak)}.r{--c:var(--rest)}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center}
+.split p.sub{color:var(--muted);margin-top:14px;max-width:30em}
+.alt{background:var(--surface);border-block:1px solid var(--line)}
+.row{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:12px 14px;border:1px solid var(--line);border-radius:10px;margin-top:10px;background:var(--bg)}
+.tag{font-size:.8rem;font-weight:500}
+.tag.done{color:#047857}.tag.open{color:#b91c1c}.tag.moved{color:#b45309}
+.lbl{color:var(--muted);font-size:.82rem;margin:14px 0 2px;font-weight:600}
+.today li{list-style:none;display:flex;gap:12px;align-items:center;padding:13px 0;border-top:1px solid var(--line)}
+.today ul{margin:12px 0 0;padding:0}
+.today .dot{width:20px;height:20px;border-radius:50%;border:2px solid var(--line);flex:none}
+.today li.on .dot{background:var(--uworld);border-color:var(--uworld)}
+.today li div{flex:1}.today li small{color:var(--muted);display:block}
+.today li .t{font-size:.8rem;color:var(--muted)}
+.bar{height:8px;border-radius:9px;background:var(--line);overflow:hidden;margin-top:6px}
+.bar i{display:block;height:100%;background:var(--c)}
+.prog{margin-top:16px;font-size:.9rem}
+.prog div.r2{display:flex;justify-content:space-between}
+.pill{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+.center{text-align:center}
+.center p.sub{margin:14px auto 0;color:var(--muted);max-width:36em}
+.legend{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:30px}
+.legend .chip{font-size:.9rem;padding:6px 14px}
+.practice{background:var(--soft);border-radius:20px;padding:48px;display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap}
+.faq{max-width:720px;margin:32px auto 0}
+details{border-bottom:1px solid var(--line);padding:18px 0}
+summary{cursor:pointer;font-weight:600;list-style:none;display:flex;justify-content:space-between}
+summary::after{content:"+";color:var(--muted);font-size:1.3rem;line-height:1}
+details[open] summary::after{content:"–"}
+details p{color:var(--muted);margin-top:10px}
+footer{border-top:1px solid var(--line);padding:28px 0;color:var(--muted);font-size:.88rem}
+footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.final{padding:96px 0}
+@media (max-width:820px){.hero .grid,.split{grid-template-columns:1fr;gap:34px}nav .links{display:none}section{padding:60px 0}.practice{padding:30px}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+[hidden]{display:none!important}
+.auth{max-width:400px;margin:56px auto;padding:0 20px}.auth h2{margin-bottom:18px}
+label.f{display:block;font-size:.88rem;font-weight:600;margin-top:14px}
+input[type=text],input[type=email],input[type=password],input[type=date],input[type=number],select{width:100%;margin-top:6px;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);font:inherit}
+.err{color:#dc2626;font-size:.88rem;min-height:1.2em;margin-top:10px}
+.topbar{border-bottom:1px solid var(--line);background:var(--surface)}.topbar .wrap{display:flex;gap:6px;align-items:center;height:60px;flex-wrap:wrap}
+.topbar .logo{margin-right:auto}.tab{padding:8px 14px;border-radius:9px;color:var(--muted);font-size:.93rem;border:0;background:none;cursor:pointer;font-family:inherit}.tab.on{background:var(--soft);color:var(--ink);font-weight:600}
+.pg{padding:32px 0 80px}.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.dc{margin-top:12px}.dc.today{border-color:var(--accent)}.dc h4{margin:0 0 8px;font-size:.98rem}
+.trow{display:flex;gap:10px;align-items:center;padding:7px 0;border-top:1px solid var(--line);cursor:pointer}.trow.dn span:not(.chip){text-decoration:line-through;color:var(--muted)}
+.trow small{margin-left:auto;color:var(--muted)}.trow em{font-size:.72rem;background:#fef3c7;color:#92400e;padding:1px 8px;border-radius:99px;font-style:normal}
+.warn{background:#fef3c7;color:#92400e;border-radius:10px;padding:10px 14px;margin-top:12px;font-size:.9rem}
+button.btn{cursor:pointer;font-family:inherit;color:var(--ink)}button.btn.primary{color:var(--accent-ink)}
+.opt{display:block;width:100%;text-align:left;margin-top:10px;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);font:inherit;cursor:pointer}
+.opt.ok{border-color:#10b981;background:#d1fae5;color:#065f46}.opt.no{border-color:#ef4444;background:#fee2e2;color:#991b1b}
+.chk{display:flex;gap:8px;align-items:center;margin-top:8px;font-weight:400}.chk input{width:auto;margin:0}
+@media (max-width:700px){.g2,.g3{grid-template-columns:1fr}}
+:root{--kaplan:#3b6fd4;--uworld:#7c4dcc;--aamc:#2f9488;--fl:#e07a2a;--anki:#d6478a;--cars:#3d9a4f;--navy:#16264a}
+.shell{display:grid;grid-template-columns:272px 1fr;min-height:100vh}
+.sb{background:var(--navy);color:#cfd8ee;padding:24px 16px;display:flex;flex-direction:column;gap:4px;position:sticky;top:0;height:100vh;overflow:auto}
+.brand{display:flex;gap:10px;align-items:center;color:#fff;font:700 1.4rem Plus Jakarta Sans,Inter,sans-serif;margin:0 8px 22px}
+.lg2{width:36px;height:36px;border-radius:10px;background:#7fb0f5;display:grid;place-items:center}.lg2 svg{width:26px;height:14px;fill:none;stroke:#16264a;stroke-width:2.4}
+.nv{display:flex;gap:12px;align-items:center;padding:12px 14px;border-radius:12px;color:#cfd8ee;font-size:.98rem}.nv.on{background:#243a66;color:#fff}.nv.off{opacity:.45}
+.nv svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.7;flex:none}
+.cn{font-size:.72rem;letter-spacing:.08em;margin:22px 14px 6px;opacity:.7}
+.mc{margin-top:auto;background:#1f3560;border-radius:16px;padding:18px;color:#cfd8ee;font-size:.9rem}.mc b{display:block;font:700 2.3rem Plus Jakarta Sans,Inter,sans-serif;color:#fff;line-height:1.1}.mc b small{font-size:1.1rem;font-weight:500}
+.sbf{display:flex;justify-content:space-between;padding:12px 6px 0}.sbf button{background:none;border:0;color:#cfd8ee;font:inherit;font-size:.9rem;cursor:pointer}
+.mn{min-width:0}.tb3{display:flex;justify-content:space-between;align-items:center;padding:0 40px;height:68px;border-bottom:1px solid var(--line);background:var(--surface);color:var(--muted)}
+.tb3 button{background:none;border:0;color:var(--ink);font-size:1.2rem;cursor:pointer;margin-left:14px}
+.ct{padding:40px;max-width:1240px;margin:0 auto}.ct .gt{color:var(--muted)}.ct h1{font:800 clamp(1.9rem,4vw,2.8rem) Plus Jakarta Sans,Inter,sans-serif;letter-spacing:-.02em}
+.hs{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.hs b{display:block;font:700 1.7rem Plus Jakarta Sans,Inter,sans-serif}.hp{display:flex;justify-content:space-between;color:#aab8d8;font-size:.9rem;margin-top:22px}
+.hb{height:10px;border-radius:9px;background:#2d4170;margin-top:12px;overflow:hidden}.hb i{display:block;height:100%;background:#7fb0f5;border-radius:9px}
+.bn{background:color-mix(in srgb,#e8743b 10%,var(--surface));border:1px solid #f0b79a;border-radius:16px;padding:16px 22px;display:flex;justify-content:space-between;gap:16px;align-items:center;margin-bottom:22px;flex-wrap:wrap}
+.bn p{color:var(--muted);font-size:.95rem}.nb{background:var(--navy)!important;color:#fff!important;border-color:var(--navy)!important}
+.cols{display:grid;grid-template-columns:1.9fr 1fr;gap:24px;align-items:start}.stk{display:grid;gap:24px}
+.ch{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px}.ch h3,.card>h3{font:700 1.4rem Plus Jakarta Sans,Inter,sans-serif}.sm{color:var(--muted)}
+.tk{display:flex;gap:14px;border:1px solid var(--line);border-left:4px solid var(--c);border-radius:14px;padding:16px 18px;margin-top:12px;background:var(--surface)}
+.tk.dn{opacity:.6}.tk b{font-weight:600;font-size:1.05rem}.tk p{color:var(--muted);font-size:.93rem;margin:2px 0 8px}.tk .tbd{flex:1;min-width:0}
+.cb{appearance:none;width:24px;height:24px;border:2px solid var(--line);border-radius:50%;flex:none;cursor:pointer;margin:0}.cb:checked{background:var(--c);border-color:var(--c)}
+.meta{display:flex;gap:14px;font-size:.9rem;color:var(--muted)}.meta .ty{color:var(--c);font-weight:500}
+.st{display:flex;gap:12px;align-items:center;margin-top:12px}.st .bar{flex:1;margin:0}.st button{width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;font-size:1.1rem}
+.st span{color:var(--muted);font-size:.9rem;min-width:90px;text-align:right}
+.pr{margin-top:18px}.pr .r2{display:flex;justify-content:space-between;align-items:center}.pr .r2 span:first-child::before{content:"";display:inline-block;width:12px;height:12px;border-radius:50%;background:var(--c);margin-right:10px}
+.pr .bar{height:9px}.sp{border-top:1px solid var(--line);margin-top:24px;padding-top:18px;display:grid;grid-template-columns:1fr 1fr;gap:16px}.sp small{color:var(--muted);display:block}.sp b{font:700 1.9rem Plus Jakarta Sans,Inter,sans-serif}
+.nx{display:grid;grid-template-columns:1fr 1fr;gap:10px}.nx div{display:flex;gap:10px;align-items:center;border:1px solid var(--line);border-radius:12px;padding:12px 16px}.nx div::before{content:"";width:11px;height:11px;border-radius:50%;background:var(--c);flex:none}.nx span{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.nx small{color:var(--muted)}
+.ph{display:grid;grid-template-columns:200px 1fr;gap:16px;align-items:center;margin-top:16px}.ph small{color:var(--muted);display:block}
+.trk{height:42px;border-radius:21px;background:color-mix(in srgb,var(--line) 50%,var(--surface));position:relative}.trk .sg{position:absolute;top:0;bottom:0;border-radius:21px}.trk .ln{position:absolute;top:-6px;bottom:-6px;width:2px;background:var(--ink)}.trk .dt{position:absolute;top:15px;width:12px;height:12px;border-radius:50%;background:var(--fl);transform:translateX(-50%)}
+.ax{display:flex;justify-content:space-between;margin:10px 0 0 216px;color:var(--muted);font-size:.9rem}
+.wl{height:9px;border-radius:9px;background:var(--line);overflow:hidden;margin:8px 0}.wl i{display:block;height:100%}
+@media (max-width:860px){.shell{grid-template-columns:1fr}.sb{position:static;height:auto;flex-direction:row;flex-wrap:wrap;padding:12px}.cn,.mc,.nv.off,.sbf{display:none}.brand{margin:0 8px 0 0}.nv{padding:8px 10px}.cols{grid-template-columns:1fr}.ct{padding:22px 16px}.tb3{padding:0 16px}.ph{grid-template-columns:1fr}.ax{margin-left:0}.nx{grid-template-columns:1fr}.hs{grid-template-columns:1fr 1fr}}
+:root{--flr:#d9a82a;--weak:#5b87a6}
+.cal-h{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}.cal-h .l{display:flex;gap:10px;align-items:center}.cal-h h1{margin-right:10px}
+.ib{min-width:42px;height:42px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink);cursor:pointer;font:inherit;font-size:1.1rem;padding:0 14px}
+.seg{display:flex;background:color-mix(in srgb,var(--line) 50%,var(--surface));padding:4px;border-radius:14px;border:1px solid var(--line)}.seg button{border:0;background:none;padding:9px 18px;border-radius:10px;color:var(--muted);font:inherit;cursor:pointer}.seg button.on{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.cal-s{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;margin:22px 0}.cal-s h2{font:700 1.7rem Plus Jakarta Sans,Inter,sans-serif}
+.lgd{display:flex;gap:8px;flex-wrap:wrap}.lgd span{display:flex;gap:8px;align-items:center;border:1px solid var(--line);border-radius:99px;padding:6px 14px;font-size:.92rem;background:var(--surface)}.lgd span::before{content:"";width:12px;height:12px;border-radius:50%;background:var(--c)}
+.mg{border:1px solid var(--line);border-radius:18px;overflow:hidden;background:var(--surface)}.mgh,.mgb{display:grid;grid-template-columns:repeat(7,minmax(0,1fr))}.mgh div{text-align:center;padding:14px;color:var(--muted);background:color-mix(in srgb,var(--line) 35%,var(--surface));border-bottom:1px solid var(--line)}
+.mc2{min-height:130px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:10px;display:flex;flex-direction:column;gap:5px;min-width:0}.mc2:nth-child(7n){border-right:0}.mc2.out .dnum{color:var(--muted);opacity:.6}.mc2.rs{background:color-mix(in srgb,var(--line) 30%,var(--surface))}
+.mh{display:flex;justify-content:space-between;align-items:center}.mh small{color:var(--muted)}.dnum{width:32px;height:32px;display:grid;place-items:center;border-radius:50%;font-weight:600;cursor:pointer}.dnum.tdy{background:var(--navy);color:#fff}.lab{color:var(--muted);font-size:.9rem}
+.pl{border-radius:99px;padding:4px 12px;font-size:.9rem;background:color-mix(in srgb,var(--c) 14%,var(--surface));color:var(--c);cursor:grab;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.pl.dn{text-decoration:line-through;opacity:.6;cursor:default}.more{color:var(--muted);font-size:.9rem;cursor:pointer;padding-left:4px}
+.wg{display:grid;grid-template-columns:repeat(7,minmax(130px,1fr));gap:14px;overflow-x:auto}.wc{border:1px solid var(--line);border-radius:20px;padding:16px 12px;min-height:420px;background:var(--surface);display:flex;flex-direction:column;gap:10px}.wc.rs{background:color-mix(in srgb,var(--line) 40%,var(--surface))}.wc.tdy{border:2px solid var(--navy)}.wc .h{display:flex;justify-content:space-between;color:var(--muted);font-size:.85rem;text-transform:uppercase}.wc .n{font:700 1.7rem Plus Jakarta Sans,Inter,sans-serif;color:var(--ink);cursor:pointer}
+.wt{border-left:4px solid var(--c);border-radius:12px;padding:10px 12px;background:color-mix(in srgb,var(--c) 12%,var(--surface));cursor:grab}.wt.dn{text-decoration:line-through;opacity:.6;cursor:default}.wt small{display:block;color:var(--muted)}
+.dg{display:grid;grid-template-columns:1fr 330px;gap:22px;align-items:start}.dg .tk:first-child{margin-top:0}
+.sw{appearance:none;width:46px;height:26px;border-radius:99px;background:var(--line);position:relative;cursor:pointer;border:0;margin:0}.sw::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:left .15s}.sw:checked{background:var(--navy)}.sw:checked::after{left:23px}
+@media (max-width:860px){.dg{grid-template-columns:1fr}.mc2{min-height:90px;padding:6px}.pl{font-size:.72rem;padding:2px 6px}.mgh div{padding:8px 2px}}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin:26px 0 22px}.g4 .card b{display:block;font:700 2.2rem Plus Jakarta Sans,Inter,sans-serif;margin-top:4px}
+.chart{display:flex;gap:10px;height:300px;margin-top:10px}.cc{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px;color:var(--muted);font-size:.9rem}.cc .bx{width:62%;max-width:84px;background:var(--soft);border-radius:14px;position:relative;overflow:hidden}.cc .bx i{position:absolute;left:0;right:0;bottom:0;background:var(--navy);border-radius:14px}
+.lgd2{display:flex;gap:22px;margin-top:14px;color:var(--muted)}.lgd2 span::before{content:'';display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:8px;background:var(--navy)}.lgd2 span+span::before{background:var(--soft)}
+table.tbl{width:100%;border-collapse:collapse;margin-top:18px}.tbl th{font-weight:400;color:var(--muted);text-align:right;padding:10px 0;border-bottom:1px solid var(--line)}.tbl td{text-align:right;padding:14px 0;border-bottom:1px solid var(--line)}.tbl th:first-child,.tbl td:first-child{text-align:left}
+.sg2{display:grid;grid-template-columns:1fr 340px;gap:24px;align-items:start}.sec{margin-bottom:24px}.sec h3{font:700 1.3rem Plus Jakarta Sans,Inter,sans-serif}.sec .hd{display:flex;justify-content:space-between;align-items:center;gap:12px}.fx{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:6px}.fx3{grid-template-columns:repeat(3,1fr)}
+.av{display:grid;grid-template-columns:repeat(7,1fr);gap:12px;margin-top:16px}.av div{border:1px solid var(--line);border-radius:14px;padding:12px 4px;text-align:center}.av div.z{background:color-mix(in srgb,var(--line) 40%,var(--surface))}.av b{display:block;font:700 1.7rem Plus Jakarta Sans,Inter,sans-serif}.av button{width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;margin:4px 2px 0}
+.cl{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}.ck{display:flex;align-items:center;gap:12px;border:1px solid var(--line);border-radius:12px;padding:12px 16px;cursor:pointer;background:var(--surface)}.ck input{width:20px;height:20px;margin:0;accent-color:var(--navy);flex:none}.ck span{flex:1}.ck small{color:var(--muted)}
+.chp{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}.chp button{border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:9px 18px;border-radius:99px;font:inherit;cursor:pointer}.chp button.on{background:var(--navy);color:#fff;border-color:var(--navy)}.chp .x{padding:6px 14px;background:color-mix(in srgb,var(--line) 50%,var(--surface))}
+.bkl{border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-top:14px}.bkl .r{display:flex;align-items:center;gap:14px;padding:14px 18px;border-top:1px solid var(--line)}.bkl .r:first-child{border-top:0}.bkl .r input{width:20px;height:20px;margin:0;accent-color:var(--navy)}.bkl .r span{flex:1}.bkl .r small{color:var(--muted)}.bkl .r button{background:none;border:0;color:var(--ink);cursor:pointer;font-size:1rem}.bkl .c2{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;padding:0 18px 16px}
+.pv{position:sticky;top:20px}.pv .ph2{display:flex;gap:12px;align-items:flex-start;margin-top:14px}.pv .ph2::before{content:'';width:12px;height:12px;border-radius:50%;background:var(--c);margin-top:7px;flex:none}.pv .ph2 small{display:block;color:var(--muted)}.pv .kv{display:flex;justify-content:space-between;margin-top:8px}.pv .kv b{font-weight:600}
+.svb{width:100%;padding:14px;border-radius:12px;border:0;background:var(--navy);color:#fff;font:inherit;font-weight:600;cursor:pointer;margin-top:14px}.svb:disabled{opacity:.45;cursor:default}.dsb{width:100%;background:none;border:0;color:var(--muted);font:inherit;margin-top:12px;cursor:pointer}
+@media (max-width:980px){.sg2{grid-template-columns:1fr}.pv{position:static}.av{grid-template-columns:repeat(4,1fr)}.cl,.fx,.fx3{grid-template-columns:1fr}.g4{grid-template-columns:1fr 1fr}.bkl .c2{grid-template-columns:repeat(3,1fr)}}
+.clk{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;vertical-align:-3px;margin-right:6px}
+.tk.dn{opacity:1;background:color-mix(in srgb,var(--line) 28%,var(--surface))}.tk.dn b{text-decoration:line-through;color:var(--muted)}
+.tk .cb:checked{background:var(--navy) url("data:image/svg+xml;utf8,<svg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 24 24%27><path d=%27M5 12.5l4.5 4.5L19 7%27 fill=%27none%27 stroke=%27white%27 stroke-width=%273%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27/></svg>") center/68% no-repeat;border-color:var(--navy)}
+/* match reference proportions */
+#app{--z:1}.shell{zoom:var(--z);min-height:calc(100vh/var(--z))}.sb{height:calc(100vh/var(--z))}
+@media (max-width:860px){#app{--z:1}.sb{height:auto}}
+.shell{grid-template-columns:256px minmax(0,1fr);font-size:14px;line-height:1.5}
+.sb{padding:28px 16px 20px;gap:3px}
+.brand{font-size:20px;margin:0 8px 26px;gap:10px}.lg2{width:30px;height:30px;border-radius:9px}.lg2 svg{width:20px;height:11px}
+.nv{font-size:15px;padding:10px 14px;border-radius:12px;gap:12px}.nv svg{width:18px;height:18px}
+.cn{font-size:12px;margin:26px 14px 6px}
+.mc{padding:18px 20px;border-radius:18px;font-size:14px}.mc b{font-size:34px}.mc b small{font-size:20px}
+.sbf button{font-size:14px}
+.tb3{height:68px;padding:0 24px;font-size:15px;position:sticky;top:env(safe-area-inset-top,0px);z-index:5}
+.ct{padding:32px 54px 64px;max-width:1190px}
+.ct .gt{font-size:15px}.ct h1{font-size:36px;letter-spacing:-.025em;line-height:1.15}
+.ct .btn{padding:9px 16px;font-size:14px;border-radius:11px}
+.hs{gap:0}.hs b{font-size:25px;margin-top:2px}.hp{font-size:14px;margin-top:20px}.hb{height:7px;margin-top:12px}
+.cols{grid-template-columns:minmax(0,1fr) 345px;gap:24px}.stk{gap:24px}
+.card{border-radius:22px;padding:24px}
+.ch{margin-bottom:12px}.ch h3,.card>h3{font-size:21px}
+.tk{align-items:flex-start;border-radius:14px;padding:15px 18px;gap:14px;margin-top:10px}.tk b{font-size:15px}.tk p{font-size:14px;margin:1px 0 6px}.meta{font-size:14px}
+.cb{width:21px;height:21px;margin-top:1px}
+.pr{margin-top:20px}.pr .r2{font-size:16px}.sp b{font-size:28px}
+.nx div{padding:11px 16px;border-radius:12px}
+@media (max-width:860px){.shell{grid-template-columns:1fr}.cols{grid-template-columns:1fr}.hs{gap:14px}.ct{padding:22px 16px 48px}.tb3{padding:0 16px}.sb{padding:12px}}
+/* second-pass sizing to match reference */
+.ct{max-width:none;padding:30px 55px 64px}
+.ct .gt{font-size:14px}.ct h1{font-size:31px}
+.ct .btn{padding:7px 14px;font-size:13.5px;border-radius:10px}
+.sb{padding:26px 16px 18px}
+.brand{font-size:18px;margin:0 8px 22px}.lg2{width:28px;height:28px}
+.nv{font-size:14px;padding:8px 14px;gap:12px}.nv svg{width:17px;height:17px}
+.cn{font-size:11.5px;margin:22px 14px 6px}
+.mc{padding:15px 18px;font-size:13px}.mc b{font-size:28px}.mc b small{font-size:17px}
+.sbf{padding:10px 4px 0}.sbf button{font-size:13.5px}
+.tb3{height:63px;font-size:14px}
+.hs b{font-size:21px}.hp{font-size:13px;margin-top:18px}
+.ch h3,.card>h3{font-size:18px}
+.tk b{font-size:13.5px}.tk p{font-size:12.5px}.meta{font-size:12.5px}
+.cb{width:19px;height:19px}
+.pr{margin-top:14px}.pr .r2{font-size:14px}.pr .r2 .sm{font-size:13px}.sp b{font-size:24px}.sp small{font-size:13px}
+.stk,.stk>*,.cols>*,.nx>*{min-width:0}
+@media (max-width:860px){.ct{padding:22px 16px 48px}.sb{padding:12px}}
+#app h1,#app h2,#app h3,#app h4{font-family:Plus Jakarta Sans,Inter,sans-serif;letter-spacing:-.01em}
+.ob{min-height:100vh;background:var(--bg);padding:20px 16px 60px;font-size:14px;color:var(--ink)}
+.ob .in{max-width:576px;margin:0 auto}
+.ob .obl{display:flex;align-items:center;gap:10px;font:700 20px Plus Jakarta Sans,Inter,sans-serif;margin:12px 0 30px}
+.ob .obs{color:var(--muted);margin-bottom:8px;font-size:14px}
+.obp{display:flex;gap:4px}.obp i{flex:1;height:4px;border-radius:4px;background:var(--line)}.obp i.on{background:var(--navy)}
+.obcard{margin-top:22px;background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:24px;box-shadow:0 2px 10px rgba(20,35,70,.07)}
+.obcard h2{font:700 21px Plus Jakarta Sans,Inter,sans-serif;margin:0}
+.obcard .sub{color:var(--muted);margin-top:6px}
+.obg{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
+.ob label{display:block;font-weight:500}
+.ob input[type=date],.ob input[type=number]{display:block;width:100%;margin-top:6px;padding:0 12px;height:36px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);font:inherit}
+.obav{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin-top:20px}
+.obtot{color:var(--muted);margin-top:14px}
+.obrow{display:flex;gap:10px;margin-top:16px}.obrow input{flex:1;margin-top:0!important}
+.obadd{padding:0 18px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;cursor:pointer}.obadd:disabled{color:var(--muted);background:color-mix(in srgb,var(--line) 30%,var(--surface));cursor:default}
+.obch{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.obch button{border:0;background:color-mix(in srgb,var(--line) 60%,var(--surface));color:var(--ink);padding:5px 12px;border-radius:99px;font:inherit;cursor:pointer}
+.opt2{display:block;width:100%;text-align:left;border:1px solid var(--line);border-radius:14px;padding:14px 18px;margin-top:12px;background:var(--surface);color:var(--ink);font:inherit;cursor:pointer}
+.opt2 b{display:block;font-weight:600;font-size:15px}.opt2 span{display:block;color:var(--muted);margin-top:4px}
+.opt2.on{border-color:var(--navy);background:color-mix(in srgb,var(--line) 30%,var(--surface))}
+.obh{margin-top:18px;font-weight:500}
+.obk2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.obk2.gap{margin-top:22px}
+.obk2 label{display:flex;align-items:center;gap:12px;border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-weight:400;cursor:pointer}
+.obk2 input{width:18px;height:18px;margin:0;accent-color:var(--navy);flex:none}
+.obnote{color:var(--muted);margin-top:18px;font-size:14px}.obnote.s{font-size:13px;margin-top:6px}
+.obn{display:flex;justify-content:space-between;align-items:center;margin-top:22px}
+.obb{border:0;background:none;color:var(--ink);padding:10px 18px;font:inherit;font-weight:500;cursor:pointer}.obb:disabled{color:var(--muted);cursor:default}
+.obc{border:0;background:var(--navy);color:#fff;padding:0 18px;height:36px;border-radius:10px;font:inherit;font-weight:500;cursor:pointer}
+.ob .err{color:#dc2626;margin-top:12px}
+@media (max-width:560px){.obg,.obk2{grid-template-columns:1fr}.obav{grid-template-columns:repeat(4,1fr)}}
+/* tokens read from the live app */
+@media (prefers-color-scheme:light){:root:not([data-theme]) #app{--bg:oklch(98.5% .004 250);--surface:oklch(100% 0 0);--ink:oklch(24% .05 262);--muted:oklch(50% .03 260);--line:oklch(91.5% .012 250);--soft:oklch(94.5% .03 242);--navy:oklch(33% .1 262);--accent:oklch(33% .1 262);--accent-ink:oklch(98.5% .005 250);--kaplan:oklch(58% .17 255);--uworld:oklch(55% .2 295);--aamc:oklch(60% .11 190);--fl:oklch(68% .17 50);--cars:oklch(62% .15 150)}}
+:root[data-theme="light"] #app{--bg:oklch(98.5% .004 250);--surface:oklch(100% 0 0);--ink:oklch(24% .05 262);--muted:oklch(50% .03 260);--line:oklch(91.5% .012 250);--soft:oklch(94.5% .03 242);--navy:oklch(33% .1 262);--accent:oklch(33% .1 262);--accent-ink:oklch(98.5% .005 250);--kaplan:oklch(58% .17 255);--uworld:oklch(55% .2 295);--aamc:oklch(60% .11 190);--fl:oklch(68% .17 50);--cars:oklch(62% .15 150)}
+#app{background:var(--bg);color:var(--ink)}
+#app .sb{background:oklch(27% .075 262);color:oklch(93% .02 250)}
+#app .nv{padding:8px 12px;font-size:14px;font-weight:500;border-radius:12px;height:36px}
+#app .nv.on{background:oklch(33% .08 262);color:oklch(98.5% 0 0)}
+#app .lg2{background:oklch(78% .1 235)}#app .lg2 svg{stroke:oklch(22% .06 262)}
+#app .mc{background:oklch(33% .08 262)}
+#app .ct{max-width:72rem;padding:32px 24px 64px}
+#app .ct h1{font-size:30px;font-weight:800}
+#app .card{border-radius:16px;padding:24px}#app .tk{border-radius:12px;padding:12px 16px}#app .ck,#app .opt2{border-radius:12px}#app .cols{grid-template-columns:minmax(0,1fr) 352px;gap:24px}
+@media (max-width:860px){#app .ct{padding:22px 16px 48px}}
+/* ===== exact replica styles (measured from the live app) ===== */
+#app {--xbg:oklch(98.5% .004 250);--xfg:oklch(24% .05 262);--xmu:oklch(50% .03 260);--xbd:oklch(91.5% .012 250);--xin:oklch(90% .014 250);--xtr:oklch(96.5% .008 250);--xcard:oklch(100% 0 0);--xpri:oklch(33% .1 262);--xsb:oklch(27% .075 262);--xsbf:oklch(93% .02 250);--xsbp:oklch(78% .1 235);--xsba:oklch(33% .08 262);--xdes:oklch(57.7% .215 27.325)}
+:root[data-theme="dark"] #app {--xbg:oklch(19% .04 262);--xfg:oklch(95% .01 250);--xmu:oklch(72% .03 260);--xbd:oklch(100% 0 0 / .1);--xin:oklch(100% 0 0 / .18);--xtr:oklch(30% .04 262);--xcard:oklch(23% .05 262);--xpri:oklch(78% .1 235);--xsb:oklch(22% .06 262)}
+#app .xshell{display:grid;grid-template-columns:256px minmax(0,1fr);min-height:100vh;background:var(--xbg);color:var(--xfg);font:400 16px/24px Inter,ui-sans-serif,system-ui,sans-serif}
+#app .xshell svg{flex:none}
+#app .xsb{position:sticky;top:0;height:100vh;display:flex;flex-direction:column;gap:24px;padding:16px;background:var(--xsb);color:var(--xsbf);overflow-y:auto}
+#app .xbr{display:flex;align-items:center;gap:8px;padding:4px 8px;font:800 18px/28px Plus Jakarta Sans,Inter,sans-serif;color:var(--xsbf)}
+#app .xnav,#app .xcm{display:flex;flex-direction:column;gap:4px}
+#app .xni{display:flex;align-items:center;gap:12px;height:36px;padding:8px 12px;border-radius:12px;font:500 14px/20px Inter,sans-serif;color:oklch(93% .02 250 / .75)}
+#app a.xni:hover{background:oklch(33% .08 262 / .55)}
+#app .xni.on{background:var(--xsba);color:oklch(98.5% 0 0)}
+#app .xni.off{font-weight:400;color:oklch(93% .02 250 / .45)}
+#app .xcn{margin:0 0 4px;padding:0 12px;font:600 11px/16px Inter,sans-serif;letter-spacing:.55px;text-transform:uppercase;color:oklch(93% .02 250 / .5)}
+#app .xft{margin-top:auto;display:flex;flex-direction:column;gap:24px}
+#app .xmc{border-radius:16px;padding:16px;background:var(--xsba);color:oklch(98.5% 0 0)}
+#app .xmc .a,#app .xmc .c{margin:0;font:400 12px/16px Inter,sans-serif;color:oklch(93% .02 250 / .7)}
+#app .xmc .b{margin:0;font:800 30px/36px Plus Jakarta Sans,Inter,sans-serif}
+#app .xmc .b span{font-size:16px;font-weight:600}
+#app .xfr{display:flex;justify-content:space-between;padding:0 4px}
+#app .xfr button{background:none;border:0;padding:0;cursor:pointer;font:400 12px/16px Inter,sans-serif;color:oklch(93% .02 250 / .6)}
+#app .xfr button:hover{color:oklch(98.5% 0 0)}
+#app .xmain{min-width:0}
+#app .xtop{position:sticky;top:0;z-index:10;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;background:color-mix(in oklab,var(--xbg) 85%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--xbd);font:400 14px/20px Inter,sans-serif;color:var(--xmu)}
+#app .xtr2{display:flex;align-items:center;gap:8px}
+#app .xtr2 span{display:inline-flex;align-items:center;gap:6px;font-size:12px;line-height:16px}
+#app .xtr2 button{width:32px;height:32px;display:grid;place-items:center;border:0;background:none;border-radius:10px;color:var(--xfg);cursor:pointer}
+#app .xtr2 button:hover{background:var(--xtr)}
+#app .xct{max-width:72rem;margin:0 auto;padding:32px 24px}
+#app .xtoday{display:flex;flex-direction:column;gap:24px}
+#app .xhd{display:flex;align-items:flex-end;justify-content:space-between;gap:12px}
+#app .xhd p{margin:0;font:400 14px/20px Inter,sans-serif;color:var(--xmu)}
+#app .xhd h1{margin:0;font:800 30px/36px Plus Jakarta Sans,Inter,sans-serif;letter-spacing:-.45px;color:var(--xfg)}
+#app .xbtn{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:32px;padding:0 10px;border-radius:10px;border:1px solid var(--xbd);background:var(--xbg);color:var(--xfg);font:500 14px/20px Inter,sans-serif;cursor:pointer;white-space:nowrap}
+#app .xbtn:hover{background:var(--xtr)}
+#app .xbtn.gh{border-color:transparent;background:transparent}
+#app .xbtn.gh:hover{background:var(--xtr)}
+#app .xbtn.pr{background:var(--xpri);border-color:var(--xpri);color:oklch(98.5% .005 250);height:36px;padding:0 16px}
+#app .xhero{position:relative;overflow:hidden;border-radius:16px;padding:32px;background:var(--xsb);color:var(--xsbf)}
+#app .xhero::before{content:"";position:absolute;top:-96px;right:-64px;width:288px;height:288px;border-radius:50%;background:oklch(78% .1 235 / .2);filter:blur(48px)}
+#app .xhin{position:relative;display:flex;align-items:flex-end;gap:40px}
+#app .xhl{flex:none;display:flex;flex-direction:column;gap:4px}
+#app .xhl .a{margin:0;font:500 14px/20px Inter,sans-serif;color:oklch(93% .02 250 / .7)}
+#app .xhl .n{margin:0;font:800 72px/1 Plus Jakarta Sans,Inter,sans-serif;color:#fff}
+#app .xhl .d{margin:0;font:400 14px/20px Inter,sans-serif;color:oklch(93% .02 250 / .7)}
+#app .xhr{flex:1;min-width:0;display:flex;flex-direction:column;gap:16px}
+#app .xhs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:0}
+#app .xhs div{min-width:0}
+#app .xhs dt{font:400 14px/20px Inter,sans-serif;color:oklch(93% .02 250 / .6)}
+#app .xhs dd{margin:0;font:700 20px/28px Plus Jakarta Sans,Inter,sans-serif;color:#fff}
+#app .xhp{display:flex;flex-direction:column;gap:6px}
+#app .xhp .t{display:flex;justify-content:space-between;font:400 12px/16px Inter,sans-serif;color:oklch(93% .02 250 / .7)}
+#app .xhb{height:8px;border-radius:99px;background:oklch(100% 0 0 / .1);overflow:hidden}
+#app .xhb i{display:block;height:100%;border-radius:99px;background:var(--xsbp)}
+#app .xban{display:flex;justify-content:space-between;align-items:center;gap:16px;border-radius:16px;border:1px solid oklch(85% .08 55);background:oklch(97% .025 60);padding:16px 20px;color:oklch(30% .06 50)}
+#app .xban p{margin:0}#app .xban .t{font:500 14px/20px Inter,sans-serif}
+#app .xgrid{display:grid;grid-template-columns:minmax(0,1fr) 352px;gap:24px;align-items:start}
+#app .xcol{display:flex;flex-direction:column;gap:24px;min-width:0}
+#app .xcard{background:var(--xcard);border:1px solid var(--xbd);border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:16px;color:var(--xfg)}
+#app .xcard>h3{margin:0 0 6px}
+#app .xcard h3{font:600 18px/28px Plus Jakarta Sans,Inter,sans-serif;letter-spacing:0;color:var(--xfg)}
+#app .xsub{margin:0;font:400 14px/20px Inter,sans-serif;color:var(--xmu)}
+#app .xch{display:flex;align-items:center;justify-content:space-between;gap:12px}
+#app .xch h3{margin:0}#app .xch .xsub{margin-top:4px}
+#app .xchr{display:flex;align-items:center;gap:12px}
+#app .xtl{display:flex;flex-direction:column;gap:10px}
+#app .xtk{position:relative;overflow:hidden;display:flex;gap:12px;padding:12px 12px 12px 16px;border:1px solid var(--xbd);border-radius:12px;background:var(--xcard)}
+#app .xtk.dn{background:color-mix(in oklab,var(--xtr) 55%,var(--xcard))}
+#app .xtk .xs{position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--c)}
+#app .xcb{appearance:none;-webkit-appearance:none;flex:none;width:20px;height:20px;margin:2px 0 0;border-radius:10px;border:1px solid var(--xin);background:transparent;cursor:pointer}
+#app .xcb:checked{background:var(--xpri) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><path d='M20 6 9 17l-5-5'/></svg>") center/12px no-repeat;border-color:var(--xpri)}
+#app .xtb{flex:1;min-width:0}
+#app .xt1{margin:0;font:500 14px/19px Inter,sans-serif;color:var(--xfg)}
+#app .xtk.dn .xt1{text-decoration:line-through;color:var(--xmu)}
+#app .xt2{margin:2px 0 0;font:400 12px/16px Inter,sans-serif;color:var(--xmu)}
+#app .xm{display:flex;align-items:center;gap:12px;margin-top:8px}
+#app .xm .l{font:500 12px/16px Inter,sans-serif;color:var(--c)}
+#app .xm .c{display:inline-flex;align-items:center;gap:4px;font:400 12px/16px Inter,sans-serif;color:var(--xmu)}
+#app .xst{display:flex;align-items:center;gap:8px;margin-top:10px}
+#app .xst button{width:24px;height:24px;display:grid;place-items:center;border-radius:10px;border:1px solid var(--xbd);background:var(--xbg);color:var(--xfg);cursor:pointer;padding:0}
+#app .xst .xbar{flex:1;height:6px}
+#app .xst>span{min-width:80px;text-align:right;font:400 12px/16px Inter,sans-serif;color:var(--xmu)}
+#app .xbar{height:8px;border-radius:99px;background:var(--xtr);overflow:hidden}
+#app .xbar i{display:block;height:100%;border-radius:99px;background:var(--c)}
+#app .xpl{display:flex;flex-direction:column;gap:16px}
+#app .xpr{display:flex;flex-direction:column;gap:6px}
+#app .xpr .xrow{display:flex;justify-content:space-between;align-items:center;font:400 14px/20px Inter,sans-serif}
+#app .xpr .l{display:inline-flex;align-items:center;gap:8px;font-weight:500}
+#app .xpr .l i{width:10px;height:10px;border-radius:50%;background:var(--c)}
+#app .xpr .n{color:var(--xmu)}
+#app .xdl{margin:4px 0 0;padding-top:16px;border-top:1px solid var(--xbd);display:grid;grid-template-columns:1fr 1fr;gap:12px}
+#app .xdl dt{font:400 12px/16px Inter,sans-serif;color:var(--xmu)}
+#app .xdl dd{margin:0;font:700 20px/28px Plus Jakarta Sans,Inter,sans-serif;color:var(--xfg)}
+#app .xnx{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+#app .xnx li{display:flex;align-items:center;gap:10px;padding:8px 12px;border:1px solid var(--xbd);border-radius:12px;min-width:0}
+#app .xnx li i{width:10px;height:10px;border-radius:50%;background:var(--c);flex:none}
+#app .xnx li span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:400 14px/20px Inter,sans-serif}
+#app .xnx li small{font:400 12px/16px Inter,sans-serif;color:var(--xmu)}
+#app .xhh .xsub{margin-top:6px}
+#app .xhh h3{margin:0}
+#app .xphs{display:flex;flex-direction:column;gap:12px}
+#app .xph{display:grid;grid-template-columns:144px minmax(0,1fr);gap:6px;align-items:center;min-height:36px}
+#app .xph p{margin:0}#app .xph .a{font:500 14px/20px Inter,sans-serif}#app .xph .b{font:400 12px/16px Inter,sans-serif;color:var(--xmu)}
+#app .xtrk{position:relative;height:24px;border-radius:10px;background:var(--xtr)}
+#app .xtrk .f{position:absolute;top:0;bottom:0;border-radius:10px}
+#app .xtrk .mk{position:absolute;top:-4px;width:2px;height:32px;border-radius:4px;background:var(--xfg)}
+#app .xtrk .dt{position:absolute;top:5px;width:14px;height:14px;border-radius:50%;background:oklch(68% .18 48);transform:translateX(-50%)}
+#app .xax{position:relative;height:16px;margin-left:150px;font:400 12px/16px Inter,sans-serif;color:var(--xmu)}
+#app .xax span{position:absolute;top:0}
+#app .xwk{display:flex;justify-content:space-between;font:500 14px/20px Inter,sans-serif}
+#app .xwk span+span{font-weight:400;color:var(--xmu)}
+#app .xwr{display:flex;gap:10px;align-items:flex-start}
+#app .xwr svg{color:var(--xdes);margin-top:2px}
+#app .xwr p{margin:0}#app .xwr .w1{font:500 14px/20px Inter,sans-serif}#app .xwr .w2{font:400 12px/16px Inter,sans-serif;color:var(--xmu);margin-top:4px}
+#app .xtoday .k{--c:oklch(57% .17 257)}#app .xtoday .u{--c:oklch(54% .2 298)}#app .xtoday .a{--c:oklch(60% .11 192)}#app .xtoday .f{--c:oklch(68% .18 48)}#app .xtoday .fr{--c:oklch(78% .15 85)}#app .xtoday .an{--c:oklch(64% .2 355)}#app .xtoday .c{--c:oklch(60% .15 150)}#app .xtoday .w{--c:oklch(60% .1 230)}
+@media (max-width:860px){#app .xshell{grid-template-columns:1fr}#app .xsb{position:static;height:auto;flex-direction:row;flex-wrap:wrap;align-items:center;gap:6px;padding:10px}#app .xcm,#app .xft{display:none}#app .xnav{flex-direction:row;flex-wrap:wrap}#app .xbr{padding:4px 6px}#app .xni{padding:8px 10px}#app .xct{padding:20px 16px}#app .xgrid,#app .xhin{display:flex;flex-direction:column;align-items:stretch}#app .xnx{grid-template-columns:1fr}#app .xhl .n{font-size:56px}#app .xtop{padding:0 16px}#app .xph{grid-template-columns:1fr}#app .xax{margin-left:0}}
+/* ===== calendar / plan setup / progress replica (measured from the live app) ===== */
+#app{--ck:oklch(57% .17 257);--cu:oklch(54% .2 298);--ca:oklch(60% .11 192);--cf:oklch(68% .18 48);--cfr:oklch(78% .15 85);--can:oklch(64% .2 355);--cc:oklch(60% .15 150);--cw:oklch(60% .1 230)}
+:root[data-theme="dark"] #app{color-scheme:dark}
+#app .xpg [data-t=k]{--c:var(--ck)}#app .xpg [data-t=u]{--c:var(--cu)}#app .xpg [data-t=a]{--c:var(--ca)}#app .xpg [data-t=f]{--c:var(--cf)}#app .xpg [data-t=fr]{--c:var(--cfr)}#app .xpg [data-t=an]{--c:var(--can)}#app .xpg [data-t=c]{--c:var(--cc)}#app .xpg [data-t=w]{--c:var(--cw)}
+#app .xpg{display:flex;flex-direction:column;gap:24px;color:var(--xfg);font:400 14px/20px Inter,ui-sans-serif,system-ui,sans-serif}
+#app .xpg h1,#app .xpg h2,#app .xpg h3,#app .xpg p{margin:0}
+#app .xpg button{font-family:Inter,sans-serif}
+#app .xpg svg{flex:none}
+#app .xhh1{display:flex;flex-direction:column;gap:4px}
+#app .xhh1 h1{font:800 30px/36px Plus Jakarta Sans,Inter,sans-serif;letter-spacing:-.45px;color:var(--xfg)}
+#app .xhh1 p{max-width:672px;color:var(--xmu)}
+#app .xpg .xsub{font:400 14px/20px Inter,sans-serif;color:var(--xmu)}
+#app .xpg .xmu14{font:400 14px/20px Inter,sans-serif;color:var(--xmu)}
+#app .xib{width:32px;height:32px;display:inline-grid;place-items:center;padding:0;border:1px solid var(--xbd);border-radius:10px;background:var(--xbg);color:var(--xfg);cursor:pointer}
+#app .xib:hover{background:var(--xtr)}
+#app .xib:disabled{opacity:.5;cursor:default}
+#app .xpg .xbtn:disabled{opacity:.5;cursor:default}
+/* switch */
+#app .xpg input.xsw{appearance:none;-webkit-appearance:none;position:relative;flex:none;width:32px;height:18px;margin:0;border:0;border-radius:99px;background:var(--xin);cursor:pointer;transition:background .15s}
+#app .xpg input.xsw::after{content:"";position:absolute;top:1px;left:1px;width:16px;height:16px;border-radius:50%;background:#fff;box-shadow:0 0 0 1px oklch(0% 0 0 / .06);transition:left .15s}
+#app .xpg input.xsw:checked{background:var(--xpri)}
+#app .xpg input.xsw:checked::after{left:15px}
+#app .xpg input.xsw:disabled{opacity:.5;cursor:default}
+/* calendar */
+#app .xcal{gap:20px}
+#app .xcb2{display:flex;align-items:center;justify-content:space-between;gap:12px}
+#app .xcl{display:flex;align-items:center;gap:8px}
+#app .xcl h1{margin:0 8px 0 0;font:800 24px/32px Plus Jakarta Sans,Inter,sans-serif;letter-spacing:-.36px}
+#app .xcal .xbtn{padding:0 12px}
+#app .xseg{display:flex;padding:2px;border:1px solid var(--xbd);border-radius:12px;background:var(--xtr)}
+#app .xseg button{height:28px;padding:4px 12px;border:0;border-radius:10px;background:transparent;font:500 14px/20px Inter,sans-serif;color:var(--xmu);cursor:pointer}
+#app .xseg button.on{background:var(--xcard);color:var(--xfg);box-shadow:0 1px 2px oklch(0% 0 0 / .08)}
+#app .xcs{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+#app .xcs h2{font:700 18px/28px Plus Jakarta Sans,Inter,sans-serif;letter-spacing:-.27px}
+#app .xlg{display:flex;flex-wrap:wrap;gap:6px}
+#app .xlc{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border:1px solid var(--xbd);border-radius:99px;background:var(--xcard);font:500 12px/16px Inter,sans-serif;color:var(--xfg)}
+#app .xlc i{width:10px;height:10px;border-radius:50%;background:var(--c)}
+#app .xmg{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:1px;background:var(--xbd);border:1px solid var(--xbd);border-radius:16px;overflow:hidden}
+#app .xmw{padding:8px 0;text-align:center;font:500 12px/16px Inter,sans-serif;color:var(--xmu);background:color-mix(in oklab,var(--xtr) 55%,var(--xcard))}
+#app .xmcell{min-height:127px;min-width:0;padding:6px;background:var(--xcard)}
+#app .xmcell.out{background:color-mix(in oklab,var(--xtr) 35%,var(--xcard))}
+#app .xmcell.out .xmt .n{color:var(--xmu);opacity:.65}
+#app .xmcell.rs{background:color-mix(in oklab,var(--xtr) 75%,var(--xcard))}
+#app .xmt{display:flex;width:100%;align-items:center;justify-content:space-between;padding:0 4px 0 0;border:0;border-radius:4px;background:none;color:var(--xfg);cursor:pointer}
+#app .xmt .n{width:24px;height:24px;display:grid;place-items:center;border-radius:50%;font:600 12px/16px Inter,sans-serif}
+#app .xmt .n.td{background:var(--xpri);color:var(--xcard)}
+#app .xmt small{font:400 10px/13.33px Inter,sans-serif;color:var(--xmu)}
+#app .xmr{margin:4px 0 0;padding:0 0 0 6px;font:500 11px/16px Inter,sans-serif;color:var(--xmu)}
+#app .xmcs{display:flex;flex-direction:column;gap:4px;margin-top:4px}
+#app .xmp{padding:2px 6px;border-radius:10px;font:500 11px/16.5px Inter,sans-serif;color:var(--c);background:color-mix(in oklab,var(--c) 12%,transparent);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:grab}
+#app .xmp.dn,#app .xwt.dn{text-decoration:line-through;opacity:.6}
+#app .xmore{display:block;margin-top:4px;padding:0 6px;border:0;background:none;font:500 11px/16px Inter,sans-serif;color:var(--xmu);cursor:pointer}
+#app .xwg{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px}
+#app .xwc{display:flex;flex-direction:column;gap:8px;min-width:0;min-height:270px;padding:8px;border:1px solid var(--xbd);border-radius:16px;background:var(--xcard)}
+#app .xwc.rs{background:var(--xtr)}
+#app .xwc.td{border-color:color-mix(in oklab,var(--xpri) 55%,var(--xbd));box-shadow:0 0 0 1px color-mix(in oklab,var(--xpri) 35%,transparent)}
+#app .xwh{display:flex;flex-direction:column;width:100%;padding:0 4px;border:0;background:none;text-align:left;color:var(--xfg);cursor:pointer}
+#app .xwh .t{display:flex;justify-content:space-between;font:400 11px/16.5px Inter,sans-serif;color:var(--xmu)}
+#app .xwh .t span:first-child{font-weight:500;text-transform:uppercase}
+#app .xwh .nn{font:700 18px/28px Plus Jakarta Sans,Inter,sans-serif}
+#app .xwt{padding:6px 8px;border-radius:12px;border-left:3px solid var(--c);background:color-mix(in oklab,var(--c) 12%,transparent);cursor:grab}
+#app .xwt .a1{font:500 12px/16.5px Inter,sans-serif;color:var(--xfg)}
+#app .xwt .b1{margin-top:2px;font:400 10px/13.33px Inter,sans-serif;color:var(--xmu)}
+#app .xdg{display:grid;grid-template-columns:minmax(0,1fr) 288px;gap:20px;align-items:start}
+#app .xdl2{gap:11px}
+#app .xdp{padding:16px;gap:16px}
+#app .xdp .plh{font:400 12px/16px Inter,sans-serif;color:var(--xmu)}
+#app .xdp .pvv{font:800 24px/32px Plus Jakarta Sans,Inter,sans-serif;letter-spacing:-.36px}
+#app .xdp .dlg{display:flex;flex-wrap:wrap;gap:4px 12px;margin-top:4px;font:400 12px/16px Inter,sans-serif;color:var(--xmu)}
+#app .xdp .dlg span{display:inline-flex;align-items:center;gap:6px}
+#app .xdp .dlg i{width:10px;height:10px;border-radius:50%;background:var(--c)}
+#app .xdp .dsec{display:flex;flex-direction:column;gap:12px;padding-top:16px;border-top:1px solid var(--xbd)}
+#app .xdp .dhh{font:500 14px/20px Inter,sans-serif}
+#app .xdp .stp{display:flex;align-items:center;gap:16px}
+#app .xdp .stp b{min-width:32px;text-align:center;font:600 16px/24px Inter,sans-serif}
+#app .xdp .nt{font:400 12px/16px Inter,sans-serif;color:var(--xmu)}
+#app .xtg{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:30px;cursor:pointer}
+#app .xtg .a{display:block;font:500 14px/14px Inter,sans-serif;color:var(--xfg)}
+#app .xtg .b{display:block;font:400 12px/14px Inter,sans-serif;color:var(--xmu)}
+#app .xnote{font:400 12px/16px Inter,sans-serif;color:var(--xmu)}
+/* plan setup */
+#app .xsg{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:24px;align-items:start}
+#app .xset .xcol{gap:24px}
+#app .xph2{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:24px}
+#app .xph2 h3{display:flex;align-items:center;gap:8px;font:600 16px/24px Plus Jakarta Sans,Inter,sans-serif;color:var(--xfg)}
+#app .xph2 h3 i{width:10px;height:10px;border-radius:50%;background:var(--c)}
+#app .xinc{display:flex;align-items:center;gap:8px;font:400 12px/16px Inter,sans-serif;color:var(--xmu);cursor:pointer}
+#app .xf{display:flex;flex-direction:column;gap:6px;min-width:0}
+#app .xf>label,#app .xbkb>label{display:block;font:500 14px/14px Inter,sans-serif;color:var(--xfg)}
+#app .xh{font:400 12px/16px Inter,sans-serif;color:var(--xmu)}
+#app .xpg .xin{display:block;width:100%;height:36px;padding:4px 12px;border:1px solid var(--xin);border-radius:10px;background:transparent;color:var(--xfg);font:400 14px/20px Inter,ui-sans-serif,sans-serif;outline:0;box-shadow:none;margin:0}
+#app .xpg .xin:focus-visible{border-color:var(--xpri);box-shadow:0 0 0 3px color-mix(in oklab,var(--xpri) 22%,transparent)}
+#app .xg2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;align-items:center}
+#app .xg3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;align-items:center}
+#app .xavg{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px}
+#app .xav{display:flex;flex-direction:column;align-items:center;gap:3px;height:90px;padding:8px;border:1px solid var(--xbd);border-radius:12px;background:var(--xcard)}
+#app .xav.z{background:var(--xtr)}
+#app .xav .d{font:400 12px/16px Inter,sans-serif;color:var(--xmu)}
+#app .xav b{font:700 20px/28px Plus Jakarta Sans,Inter,sans-serif}
+#app .xav .s{display:flex;gap:4px}
+#app .xav .s button{width:24px;height:24px;display:grid;place-items:center;padding:0;border:1px solid var(--xbd);border-radius:10px;background:var(--xbg);color:var(--xfg);cursor:pointer}
+#app .xav .s button:disabled{opacity:.4;cursor:default}
+#app .xbkb{display:flex;flex-direction:column;gap:8px}
+#app .xbk{display:flex;align-items:center;gap:8px}
+#app .xpg .xbtn.blk{height:36px;padding:0 16px;background:var(--xtr);border-color:var(--xtr);color:var(--xmu)}
+#app .xpg .xbtn.blk:not(:disabled){background:var(--xcard);border-color:var(--xbd);color:var(--xfg)}
+#app .xchp{display:flex;flex-wrap:wrap;gap:6px}
+#app .xchp button{display:inline-flex;align-items:center;gap:6px;height:26px;padding:4px 12px;border:1px solid var(--xin);border-radius:99px;background:var(--xcard);color:var(--xfg);font:500 12px/16px Inter,sans-serif;cursor:pointer}
+#app .xchp button.on{background:var(--xpri);border-color:var(--xpri);color:var(--xcard)}
+#app .xchp.x:empty{display:none}
+#app .xpg .xcbx{appearance:none;-webkit-appearance:none;flex:none;width:16px;height:16px;margin:0;border:1px solid var(--xin);border-radius:4px;background:transparent;cursor:pointer}
+#app .xpg .xcbx:checked{background:var(--xpri) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'><path d='M20 6 9 17l-5-5'/></svg>") center/12px no-repeat;border-color:var(--xpri)}
+#app .xbl{border:1px solid var(--xin);border-radius:12px;overflow:hidden}
+#app .xbrow{display:flex;align-items:center;gap:12px;padding:12px;border-bottom:1px solid var(--xbd)}
+#app .xbrow:last-child{border-bottom:0}
+#app .xbrow .nm{flex:1;min-width:0;font:500 14px/20px Inter,sans-serif}
+#app .xbrow small{font:400 12px/16px Inter,sans-serif;color:var(--xmu)}
+#app .xbrow button{display:grid;place-items:center;padding:0;border:0;background:none;color:var(--xmu);cursor:pointer}
+#app .xbx{display:flex;flex-wrap:wrap;gap:6px;padding:12px;border-bottom:1px solid var(--xbd);background:var(--xtr)}
+#app .xbx .xbtn{height:28px;padding:0 10px;font-size:12px}
+#app .xbx .xbtn.on{background:var(--xpri);border-color:var(--xpri);color:var(--xcard)}
+#app .xml{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+#app .xck{display:flex;align-items:center;gap:12px;height:42px;padding:0 12px;border:1px solid var(--xin);border-radius:12px;cursor:pointer;min-width:0}
+#app .xck span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:400 14px/20px Inter,sans-serif}
+#app .xck small{font:400 12px/16px Inter,sans-serif;color:var(--xmu)}
+#app .xsb2{display:flex;flex-direction:column;gap:12px;padding:12px;border:1px solid var(--xbd);border-radius:12px}
+#app .xph2.sm2 h3{font:500 14px/20px Inter,sans-serif}
+#app .xpv{position:sticky;top:80px;padding:24px;gap:16px}
+#app .xpv .hd h3{font:600 18px/28px Plus Jakarta Sans,Inter,sans-serif}
+#app .xpv ul.xphl{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+#app .xpv ul.xphl li{display:flex;gap:8px;align-items:flex-start}
+#app .xpv ul.xphl li i{width:10px;height:10px;margin-top:5px;border-radius:50%;background:var(--c);flex:none}
+#app .xpv .a1{font:500 14px/20px Inter,sans-serif}
+#app .xpv .b1{font:400 12px/16px Inter,sans-serif;color:var(--xmu)}
+#app .xpv .kv{display:flex;flex-direction:column;padding-top:16px;border-top:1px solid var(--xbd)}
+#app .xpv .kv p{display:flex;justify-content:space-between;font:400 14px/20px Inter,sans-serif;color:var(--xmu)}
+#app .xpv .kv b{font-weight:600;color:var(--xfg)}
+#app .xpv .wn{display:flex;gap:8px;align-items:flex-start;padding-top:16px;border-top:1px solid var(--xbd)}
+#app .xpv .wn svg{margin-top:2px;color:var(--xdes)}
+#app .xpv .wn.ok svg{color:oklch(60% .15 150)}
+#app .xpv .wn .b1{margin-top:4px}
+#app .xpv .btns{display:flex;flex-direction:column;gap:8px}
+#app .xpv .xbtn{width:100%;height:36px}
+#app .xpv .xbtn.gh{color:var(--xmu)}
+/* progress */
+#app .xs4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+#app .xs4 .xcard{padding:16px;gap:0}
+#app .xs4 .l{display:flex;align-items:center;gap:6px;font:400 12px/16px Inter,sans-serif;color:var(--xmu)}
+#app .xs4 .v{font:800 24px/32px Plus Jakarta Sans,Inter,sans-serif;letter-spacing:-.36px;color:var(--xfg)}
+#app .xpc{gap:24px}
+#app .xhh2 h3{font:600 16px/16px Plus Jakarta Sans,Inter,sans-serif;color:var(--xfg)}
+#app .xhh2 .xsub{margin-top:6px}
+#app .xchart{display:flex;flex-direction:column}
+#app .xbars{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:16px;height:172px;align-items:end}
+#app .xbc{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:4px}
+#app .xbc .v{font:400 11px/16.5px Inter,sans-serif;color:var(--xmu)}
+#app .xbc .b{position:relative;width:48px;border-radius:10px 10px 0 0;background:var(--xtr);overflow:hidden}
+#app .xbc .b i{position:absolute;left:0;right:0;bottom:0;background:var(--xpri)}
+#app .xbl2{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:16px;margin-top:4px;text-align:center;font:400 12px/16px Inter,sans-serif;color:var(--xmu)}
+#app .xlg2{display:flex;gap:16px;margin-top:13px;font:400 12px/16px Inter,sans-serif;color:var(--xmu)}
+#app .xlg2 span{display:inline-flex;align-items:center;gap:6px}
+#app .xlg2 i{width:10px;height:10px;border-radius:50%}
+#app .xlg2 i.s{background:var(--xpri)}#app .xlg2 i.p{background:var(--xtr);border:1px solid var(--xbd)}
+#app .xg2c{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;align-items:start}
+#app .xcrs{display:flex;flex-direction:column;gap:8px}
+#app .xcr1{display:flex;flex-direction:column;gap:8px}
+#app .xcr1 .xcrow{display:flex;justify-content:space-between;align-items:center;font:400 14px/20px Inter,sans-serif}
+#app .xcr1 .l{display:inline-flex;align-items:center;gap:8px;font-weight:500}
+#app .xcr1 .l i{width:10px;height:10px;border-radius:50%;background:var(--c)}
+#app .xcr1 .n{color:var(--xmu)}
+#app .xtb2{width:100%;border-collapse:collapse}
+#app .xtb2 th{padding:8px 0;border-bottom:1px solid var(--xbd);text-align:right;font:400 12px/16px Inter,sans-serif;color:var(--xmu)}
+#app .xtb2 td{padding:6px 0;border-top:1px solid var(--xbd);text-align:right;font:400 14px/20px Inter,sans-serif}
+#app .xtb2 tbody tr:first-child td{border-top:0}
+#app .xtb2 th:first-child,#app .xtb2 td:first-child{text-align:left}
+#app .xtb2 td.mu{color:var(--xmu)}
+@media (max-width:1000px){#app .xsg,#app .xdg,#app .xg2c{grid-template-columns:1fr}#app .xpv{position:static}#app .xs4{grid-template-columns:repeat(2,minmax(0,1fr))}#app .xg3{grid-template-columns:1fr}#app .xavg{grid-template-columns:repeat(4,minmax(0,1fr))}#app .xml{grid-template-columns:1fr}}
+@media (max-width:760px){#app .xwg{grid-template-columns:repeat(7,minmax(120px,1fr));overflow-x:auto}#app .xmg{overflow-x:auto}#app .xg2{grid-template-columns:1fr}#app .xcb2{flex-wrap:wrap}}
+
+
+/* ===== practice exams + weakness tracker styles ===== */
+#app .xpg select.xin{appearance:auto;padding-right:8px}
+#app .xg4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+#app .xpc form,#app form.xpc{gap:16px}
+#app .xerr{min-height:0;font:400 12px/16px Inter,sans-serif;color:var(--xdes)}
+#app .xerr:empty{display:none}
+#app .xemp{padding:8px 0}
+#app .xs4 .tgi{height:32px;margin-top:0;font:800 24px/32px Plus Jakarta Sans,Inter,sans-serif;padding:0 8px;border-color:transparent;background:var(--xtr)}
+#app .xs4 .tgi:focus-visible{border-color:var(--xpri)}
+#app .xsc{width:100%;height:auto;display:block;overflow:visible}
+#app .xsc .gl{stroke:var(--xbd);stroke-width:1}
+#app .xsc .ax{fill:var(--xmu);font:400 11px Inter,sans-serif}
+#app .xsc .ln{fill:none;stroke:var(--xpri);stroke-width:2.5;stroke-linejoin:round;stroke-linecap:round}
+#app .xsc .dt{fill:var(--xcard);stroke:var(--xpri);stroke-width:2.5}
+#app .xsc .vl{fill:var(--xfg);font:600 12px Inter,sans-serif}
+#app .xsc .tg{stroke:var(--cf);stroke-width:1.5;stroke-dasharray:6 5}
+#app .xsc .tgt{fill:var(--cf);font:600 11px Inter,sans-serif}
+#app .xexm .xtb2 th:nth-child(n+2),#app .xexm .xtb2 td:nth-child(n+2){text-align:right}
+#app .xen{display:block;font:500 14px/20px Inter,sans-serif}
+#app .xed{display:block;font:400 12px/16px Inter,sans-serif;color:var(--xmu)}
+#app .xsr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+#app .xdel{width:28px;height:28px;border-color:transparent;background:transparent;color:var(--xmu)}
+#app .xwkl{display:flex;flex-direction:column;gap:16px}
+#app .xwki{display:flex;flex-direction:column;gap:8px;padding-bottom:16px;border-bottom:1px solid var(--xbd)}
+#app .xwki:last-child{border-bottom:0;padding-bottom:0}
+#app .xwki .top{display:flex;justify-content:space-between;align-items:center;gap:12px;font:400 14px/20px Inter,sans-serif}
+#app .xwki .l{display:inline-flex;align-items:center;gap:8px;font-weight:500;min-width:0}
+#app .xwki .l i{width:10px;height:10px;border-radius:50%;background:var(--c);flex:none}
+#app .xwki .n{color:var(--xmu);white-space:nowrap}
+#app .xwki .bt{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+#app .xwki .m{font:400 12px/16px Inter,sans-serif;color:var(--xmu)}
+#app .xwki .ac{display:flex;gap:8px}
+#app .xwki .xbtn{height:28px;padding:0 10px;font-size:12px}
+@media (max-width:1000px){#app .xg4{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* ===== providers, grouped full-lengths, custom resources ===== */
+#app{--cd:oklch(62% .13 135);--cx:oklch(52% .05 260)}
+#app .xtoday .dc{--c:var(--cd)}#app .xtoday .cs{--c:var(--cx)}
+#app .xpg [data-t=dc]{--c:var(--cd)}#app .xpg [data-t=cs]{--c:var(--cx)}
+#app .xfg{display:flex;flex-direction:column;gap:8px}
+#app .xfgh{display:flex;align-items:center;gap:12px}
+#app .xfgh .nm{font:500 14px/20px Inter,sans-serif}
+#app .xfgh small{flex:1;font:400 12px/16px Inter,sans-serif;color:var(--xmu)}
+#app .xfgh .xbtn{height:28px;padding:0 10px;font-size:12px}
+#app .xlnk{margin-left:8px;padding:0;border:0;background:none;font:500 12px/16px Inter,sans-serif;color:var(--xdes);cursor:pointer;text-decoration:underline}
+#app .xcnt{display:flex;align-items:center;gap:8px;width:100%;font:500 14px/20px Inter,sans-serif}
+#app .xcnt .xin{width:90px}
+#app .xph2.sm2 .xdel{width:28px;height:28px}
+#app .ob .obpv{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+#app .ob .obpv button{height:34px;padding:0 14px;border:1px solid var(--line,#d6dde8);border-radius:99px;background:transparent;font:500 14px Inter,sans-serif;color:inherit;cursor:pointer}
+#app .ob .obpv button.on{background:var(--navy,#1e3a6e);border-color:var(--navy,#1e3a6e);color:#fff}
+#app .dc{--c:var(--cd)}#app .cs{--c:var(--cx)}
+
+#app .xbx{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 24px;padding:12px 16px 16px 48px;background:transparent}
+#app .xchr{display:flex;gap:10px;align-items:flex-start;font:400 14px/20px Inter,sans-serif;cursor:pointer;min-width:0}
+#app .xchr .xcbx{margin-top:2px}
+#app .xchr em{font-style:normal;color:var(--xmu)}
+@media (max-width:760px){#app .xbx{grid-template-columns:1fr;padding-left:16px}}
+
+#landing{--lb:#f3f6fb;--lt:#e6edf8;--lc:#fff;--li:#16264a;--lm:#4b5876;--ls:#7fb0f5;--lbtn:#16264a;--lbtnt:#fff;--lfin:#16264a;--lr:8px;
+  background:var(--lb);color:var(--li);font:400 16px/1.55 Inter,system-ui,sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) #landing{--lb:#0e1527;--lt:#151e36;--lc:#1a2540;--li:#e8eefb;--lm:#9aa7c4;--lbtn:#7fb0f5;--lbtnt:#0e1527;--lfin:#1a2a52}}
+:root[data-theme="dark"] #landing{--lb:#0e1527;--lt:#151e36;--lc:#1a2540;--li:#e8eefb;--lm:#9aa7c4;--lbtn:#7fb0f5;--lbtnt:#0e1527;--lfin:#1a2a52}
+#landing *{box-sizing:border-box}
+#landing h1,#landing h2{font-family:'Plus Jakarta Sans',Inter,sans-serif;font-weight:800;margin:0;text-wrap:balance}
+#landing h1{font-size:clamp(2.5rem,8vw,7.5rem);line-height:.98;letter-spacing:-.04em}
+#landing h2{font-size:clamp(2rem,4.2vw,3.5rem);line-height:1.04;letter-spacing:-.035em}
+#landing .lp-w{max-width:1360px;margin:0 auto;padding:0 32px}
+#landing .lp-s{padding:160px 0}
+#landing .lp-tone{background:var(--lt)}
+#landing .lp-vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+#landing nav{border:0;position:static;background:none;padding:0}
+#landing .lp-nav{position:sticky;top:0;z-index:5;background:var(--lb)}
+#landing .lp-navin{display:flex;align-items:center;gap:24px;height:72px}
+#landing .lp-logo{display:flex;align-items:center;gap:10px;font:800 1.3rem 'Plus Jakarta Sans',sans-serif;letter-spacing:-.02em;margin-right:auto}
+#landing .lp-mark{width:32px;height:32px;border-radius:8px;background:var(--ls);display:grid;place-items:center}
+#landing .lp-mark svg{width:24px;height:13px;fill:none;stroke:#16264a;stroke-width:2.4}
+#landing .lp-links{display:flex;gap:28px;font-size:.9375rem;font-weight:500}
+#landing .lp-links a,#landing .lp-tl{color:var(--li);opacity:.75;transition:opacity .15s}
+#landing .lp-links a:hover,#landing .lp-tl:hover{opacity:1}
+#landing .lp-tl{font-size:.9375rem;font-weight:500}
+#landing .lp-b{display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:0 18px;border-radius:var(--lr);font:600 .9375rem Inter,sans-serif;border:0;background:var(--lt);color:var(--li);transition:transform .15s,opacity .15s}
+#landing .lp-b:hover{opacity:.9}#landing .lp-b:active{transform:scale(.97)}
+#landing .lp-pri{background:var(--lbtn);color:var(--lbtnt)}
+#landing .lp-sky{background:var(--ls);color:#16264a}
+#landing .lp-lg{min-height:56px;padding:0 28px;font-size:1.0625rem}
+#landing a:focus-visible,#landing input:focus-visible,#landing summary:focus-visible{outline:3px solid var(--ls);outline-offset:3px}
+#landing .lp-hero{padding:56px 0 160px}
+#landing .lp-inl{display:inline-flex;gap:.03em;vertical-align:baseline;width:2.9em;height:.78em;margin-left:.2em;border-radius:.14em;overflow:hidden;background:var(--lt);transform:translateY(.1em)}
+#landing .lp-inl i{display:block;height:100%;background:var(--c);transform-origin:left;animation:lpgrow .9s .15s cubic-bezier(.2,.7,.2,1) both}
+#landing .lp-inl i:nth-child(2){animation-delay:.25s}#landing .lp-inl i:nth-child(3){animation-delay:.35s}#landing .lp-inl i:nth-child(4){animation-delay:.45s}
+@keyframes lpgrow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+#landing .lp-hrow{display:grid;grid-template-columns:minmax(0,6fr) minmax(0,6fr);gap:32px;align-items:end;margin:48px 0 96px}
+#landing .lp-lead{font-size:1.25rem;line-height:1.5;max-width:30em;grid-column:1}
+#landing .lp-cta{display:flex;align-items:center;gap:20px;flex-wrap:wrap;justify-self:end;grid-column:2}
+#landing .lp-fine{font-size:.9375rem;color:var(--lm)}
+#landing .lp-win{background:var(--lt);border-radius:var(--lr);overflow:hidden}
+#landing .lp-tone .lp-win{background:var(--lb)}
+#landing .lp-wh{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:20px 24px 8px;font-size:.9375rem;font-weight:600}
+#landing .lp-wh span:last-child{color:var(--lm);font-weight:400}
+#landing .lp-bars{padding:8px 24px}
+#landing .lp-dr{display:grid;grid-template-columns:56px minmax(0,1fr) 84px;gap:16px;align-items:center;padding:7px 0}
+#landing .lp-dl{font-size:.8125rem;line-height:1.1;color:var(--lm)}
+#landing .lp-dl b{display:block;font:800 1.125rem 'Plus Jakarta Sans',sans-serif;color:var(--li);margin-top:2px}
+#landing .lp-bar{display:flex;gap:3px;height:36px;border-radius:6px;background:var(--lb);overflow:hidden;min-width:0}
+#landing .lp-tone .lp-bar{background:var(--lt)}
+#landing .lp-sg{display:block;height:100%;font:600 .8125rem/36px Inter,sans-serif;font-style:normal;padding:0 7px;white-space:nowrap;overflow:hidden;color:#fff;background:var(--c);transition:width .25s}
+#landing .lp-miss{background:var(--lc);color:var(--li)}
+#landing .lp-mv{background:var(--c);filter:brightness(1.25)}
+#landing .lp-tt{font-size:.875rem;color:var(--lm);text-align:right;white-space:nowrap}
+#landing .lp-restl{font-size:.875rem;line-height:36px;color:var(--lm);padding:0 12px}
+#landing .lp-key{display:flex;flex-wrap:wrap;gap:8px 24px;padding:8px 24px 24px;font-size:.875rem;color:var(--lm)}
+#landing .lp-key span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:3px;background:var(--c);margin-right:8px}
+#landing .lp-state{font:500 clamp(1.5rem,2.9vw,2.25rem)/1.22 Inter,sans-serif;letter-spacing:-.02em;max-width:34em}
+#landing .lp-slot{display:inline-flex;vertical-align:-.12em;width:1.9em;height:1em;margin:0 .1em;border-radius:.18em;overflow:hidden;background:var(--lt);gap:2px}
+#landing .lp-s1{flex-direction:column;justify-content:space-evenly;padding:.14em .16em;gap:0}
+#landing .lp-s1 i{display:block;height:.17em;border-radius:.1em;background:var(--c)}
+#landing .lp-s2{padding:.16em;gap:.06em;align-items:stretch}
+#landing .lp-s2 i{flex:1;border-radius:.08em;background:var(--ls)}#landing .lp-s2 i.r{background:var(--lb)}
+#landing .lp-s3{padding:.16em;align-items:stretch;gap:.06em}
+#landing .lp-s3 .m{flex:0 0 40%;border-radius:.08em;background:var(--lc)}
+#landing .lp-s3 .a{flex:1;border-radius:.08em;background:var(--uworld)}
+#landing .lp-s4 svg{width:100%;height:100%;padding:.12em}#landing .lp-s4 path{fill:none;stroke:var(--aamc);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+#landing .lp-side{display:grid;grid-template-columns:minmax(0,6fr) minmax(0,6fr);gap:32px;margin-top:72px;align-items:start}
+#landing .lp-side p{grid-column:2;font-size:1.125rem;max-width:26em;margin-bottom:28px}
+#landing .lp-side a{grid-column:2;justify-self:start}
+#landing .lp-side{align-items:center}
+#landing .lp-side p,#landing .lp-side a{grid-column:auto}
+#landing .lp-sdt{display:flex;flex-direction:column;align-items:flex-start;gap:28px}#landing .lp-sdt p{margin:0}
+#landing .lp-task{display:grid;grid-template-columns:20px 4px minmax(0,1fr) auto;gap:14px;align-items:center;padding:14px 24px;cursor:pointer}
+#landing .lp-task input{width:18px;height:18px;margin:0;accent-color:#16264a}
+#landing .lp-task i{align-self:stretch;border-radius:2px;background:var(--c)}
+#landing .lp-task b{display:block;font-weight:600;font-size:1rem;color:var(--li)}
+#landing .lp-task span{font-size:.9375rem;color:var(--lm)}#landing .lp-task em{font-style:normal;font-size:.875rem;color:var(--lm)}
+#landing .lp-task input:checked~span b{text-decoration:line-through;color:var(--lm)}
+#landing .lp-today{padding-bottom:16px}#landing .lp-today .lp-task{padding-block:20px}
+#landing .lp-fh{grid-column:1/-1;max-width:14em;margin-bottom:24px}
+#landing .lp-fgrid{display:grid;grid-template-columns:minmax(0,6fr) minmax(0,6fr);gap:48px 64px;align-items:center}
+#landing .lp-fl{display:grid;grid-template-columns:1fr 1fr;gap:56px 40px}
+#landing .lp-tk{display:block;width:48px;height:6px;border-radius:3px;background:var(--c);margin-bottom:20px}
+#landing .lp-fl h3{font:700 1.75rem/1.15 'Plus Jakarta Sans',sans-serif;letter-spacing:-.02em;margin:0}
+#landing .lp-fl p{margin:12px 0 0;color:var(--lm);font-size:1.0625rem}
+#landing .lp-fl a{grid-column:1/-1;justify-self:start;margin-top:8px}
+@media (max-width:900px){#landing .lp-fgrid{grid-template-columns:minmax(0,1fr);gap:40px}#landing .lp-fl{grid-template-columns:1fr;gap:28px}}
+#landing .lp-stl p{font-size:1.125rem;max-width:22em;margin-top:24px}
+#landing .lp-days{display:grid;grid-template-columns:repeat(14,1fr);gap:6px}
+#landing .lp-days i{aspect-ratio:1;border-radius:4px;background:var(--li)}
+#landing .lp-days i.r{background:var(--lt)}#landing .lp-days i.d{background:var(--ls)}
+#landing .lp-led{margin:56px 0 0;display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
+#landing .lp-led dt{font:800 clamp(2.5rem,4.6vw,4.25rem)/1 'Plus Jakarta Sans',sans-serif;letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+#landing .lp-led dd{margin:12px 0 0;font-size:.9375rem;color:var(--lm)}
+@media (max-width:900px){#landing .lp-led{grid-template-columns:1fr 1fr;gap:32px 24px}#landing .lp-days{gap:4px}}
+#planner.in .lp-sg{transform-origin:left;animation:lpgrow .8s cubic-bezier(.2,.7,.2,1) both}
+#planner.in .lp-dr:nth-child(2) .lp-sg{animation-delay:.08s}#planner.in .lp-dr:nth-child(3) .lp-sg{animation-delay:.16s}#planner.in .lp-dr:nth-child(4) .lp-sg{animation-delay:.24s}#planner.in .lp-dr:nth-child(5) .lp-sg{animation-delay:.32s}#planner.in .lp-dr:nth-child(6) .lp-sg{animation-delay:.4s}#planner.in .lp-dr:nth-child(7) .lp-sg{animation-delay:.48s}
+#landing .lp-stv .lp-days i{opacity:0;transform:scale(.6);transition:opacity .4s,transform .4s;transition-delay:calc(var(--i,0)*9ms)}
+#landing .lp-stv.in .lp-days i{opacity:1;transform:none}
+#landing:not(.lp-js) .lp-days i{opacity:1;transform:none}
+#landing .lp-task{transition:background-color .15s}#landing .lp-task:hover{background:color-mix(in srgb,var(--li) 5%,transparent)}
+#landing .lp-fl>div{transition:transform .2s}#landing .lp-fl>div:hover{transform:translateY(-3px)}
+#landing .lp-tk{transition:width .25s}#landing .lp-fl>div:hover .lp-tk{width:80px}
+#landing .lp-bar .lp-sg:hover{filter:brightness(1.12)}
+@keyframes xfade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+#app .xpg{animation:xfade .35s cubic-bezier(.2,.7,.2,1) both}
+@media (prefers-reduced-motion:reduce){#planner.in .lp-sg,#app .xpg{animation:none}#landing .lp-stv .lp-days i{opacity:1;transform:none;transition:none}#landing .lp-fl>div:hover{transform:none}}
+#landing .lp-hg{display:grid;grid-template-columns:minmax(0,6fr) minmax(0,6fr);gap:56px;align-items:center}
+#landing .lp-hero h1{font-size:clamp(2.5rem,4.9vw,4.75rem)}
+#landing .lp-hero .lp-hrow{display:block;margin:32px 0 0}
+#landing .lp-hero .lp-cta{justify-self:auto;margin-top:32px}
+@media (max-width:900px){#landing .lp-hg{grid-template-columns:minmax(0,1fr);gap:40px}}
+#landing .lp-rbg{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:64px;align-items:center}
+#landing .lp-rbl p{font-size:1.125rem;max-width:26em;margin-top:24px}
+#landing .lp-rng{margin-top:40px}
+#landing .lp-rngr span{font-size:.9375rem;font-weight:600;max-width:7em;line-height:1.3}
+#landing .lp-rngr{display:flex;align-items:center;gap:20px}
+#landing .lp-rngr output{font:800 2.5rem/1 'Plus Jakarta Sans',sans-serif;letter-spacing:-.03em;min-width:2ch;text-align:right}
+#landing input[type=range]{-webkit-appearance:none;appearance:none;flex:1;height:8px;border-radius:4px;background:var(--li);margin:0}
+#landing input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:32px;height:32px;border-radius:6px;background:var(--ls);border:0;cursor:grab}
+#landing input[type=range]::-moz-range-thumb{width:32px;height:32px;border-radius:6px;background:var(--ls);border:0;cursor:grab}
+#landing .lp-stg{display:grid;grid-template-columns:minmax(0,4fr) minmax(0,8fr);gap:64px;align-items:center}
+#landing .lp-pg{display:grid;grid-template-columns:minmax(0,4fr) minmax(0,8fr);gap:64px;align-items:center}
+#landing .lp-pgt p{font-size:1.125rem;max-width:26em;margin-top:24px}
+#landing .lp-lg2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px}
+#landing .lp-lg2>div{padding:8px 24px 24px}
+#landing .lp-pr{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 16px;padding:14px 0;font-size:.9375rem;font-weight:500}
+#landing .lp-pr b{font-weight:400;color:var(--lm);text-align:right}
+#landing .lp-pb{grid-column:1/-1;height:8px;border-radius:4px;background:var(--lt);overflow:hidden}
+#landing .lp-pb i{display:block;height:100%;background:var(--c)}
+#landing .lp-sc table{width:100%;border-collapse:collapse;font-size:.9375rem}
+#landing .lp-sc caption{text-align:left;font-weight:600;padding-bottom:12px}
+#landing .lp-sc th{font-size:.8125rem;font-weight:400;color:var(--lm);text-align:left;padding:4px 0}
+#landing .lp-sc td{padding:10px 8px 10px 0;white-space:nowrap}
+#landing .lp-sc th:last-child,#landing .lp-sc td:last-child{text-align:right;font-weight:700}
+#landing .lp-weak{font-size:.9375rem;margin-top:20px;color:var(--lm)}#landing .lp-weak b{color:var(--li);font-weight:600}
+#landing .lp-rsg{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:64px;align-items:start}
+#landing .lp-res{margin:0;display:grid;gap:32px 48px;grid-template-columns:1fr 1fr}
+#landing .lp-res dt{font:700 1.375rem/1.2 'Plus Jakarta Sans',sans-serif;letter-spacing:-.02em}
+#landing .lp-res dd{margin:8px 0 0;color:var(--lm);font-size:1rem}
+#landing .lp-pq{display:grid;grid-template-columns:minmax(0,9fr) minmax(0,3fr);gap:48px;align-items:end}
+#landing .lp-pq a{justify-self:end}
+#landing .lp-qh{max-width:12em}
+#landing .lp-faq{margin:80px 0 0 calc(100%/12*4);max-width:calc(100% - 100%/12*4)}
+#landing .lp-faq details{padding:0;margin:0 0 12px;border:0;border-radius:var(--lr)}
+#landing .lp-faq details[open]{background:var(--lt);margin-left:-24px;padding-inline:24px}
+#landing .lp-faq summary{padding:20px 0;font-size:1.375rem;font-weight:500;cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:16px;letter-spacing:-.01em}
+#landing .lp-faq summary::-webkit-details-marker{display:none}
+#landing .lp-faq summary::after{content:"";width:10px;height:10px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg) translate(-3px,-3px);flex:none;align-self:center;transition:transform .2s}
+#landing .lp-faq details[open] summary::after{transform:rotate(-135deg) translate(-3px,-3px)}
+#landing .lp-faq details p{padding-bottom:24px;max-width:48ch;font-size:1.0625rem;color:var(--li)}
+#landing .lp-fin{background:var(--lfin);color:#fff;padding:120px 0 40px;min-height:80svh}
+#landing .lp-fg{min-height:calc(80svh - 160px);display:flex;flex-direction:column}
+#landing .lp-fin h2{color:#fff;font-size:clamp(3rem,10vw,9.5rem);line-height:.92;letter-spacing:-.045em}
+#landing .lp-fb{display:flex;justify-content:space-between;align-items:center;gap:32px;flex-wrap:wrap;margin-top:auto;padding-top:96px}
+#landing .lp-fb p{font-size:1.25rem;max-width:20em}
+#landing .lp-foot{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:96px;font-size:.875rem;opacity:.7}
+#landing .lp-rv{opacity:0;transform:translateY(24px);transition:opacity .7s cubic-bezier(.2,.7,.2,1),transform .7s cubic-bezier(.2,.7,.2,1)}
+#landing .lp-rv.in{opacity:1;transform:none}
+#landing:not(.lp-js) .lp-rv{opacity:1;transform:none}
+@media (max-width:900px){
+ #landing .lp-w{padding:0 20px}
+ #landing .lp-s{padding:96px 0}#landing .lp-hero{padding:32px 0 96px}
+ #landing .lp-links,#landing .lp-inl{display:none}
+ #landing h1{font-size:clamp(2.25rem,10.4vw,4rem)}
+ #landing .lp-hrow,#landing .lp-side,#landing .lp-rbg,#landing .lp-stg,#landing .lp-pg,#landing .lp-rsg,#landing .lp-pq{grid-template-columns:minmax(0,1fr);gap:32px}
+ #landing .lp-hrow{margin:32px 0 56px}#landing .lp-lead,#landing .lp-cta,#landing .lp-side p,#landing .lp-side a{grid-column:1;justify-self:start}
+ #landing .lp-lg2{grid-template-columns:1fr}
+ #landing .lp-res{grid-template-columns:1fr;gap:24px}
+ #landing .lp-faq{margin:48px 0 0;max-width:none}
+ #landing .lp-faq details[open]{margin-inline:-20px;padding-inline:20px}#landing .lp-faq summary{font-size:1.1875rem}
+ #landing .lp-dr{grid-template-columns:40px minmax(0,1fr)}#landing .lp-tt{display:none}#landing .lp-bars{padding:8px 16px}
+ #landing .lp-sg{font-size:0;padding:0}#landing .lp-sg.lp-miss,#landing .lp-sg.lp-mv{font-size:.8125rem;padding:0 6px}
+ 
+ #landing .lp-pq a{justify-self:start}
+ #landing .lp-fin{padding:80px 0 32px}#landing .lp-fb{padding-top:64px}#landing .lp-fb a{width:100%}
+}
+@media (prefers-reduced-motion:reduce){#landing .lp-rv{opacity:1;transform:none;transition:none}#landing .lp-inl i{animation:none}}
+
+.xa{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);min-height:100vh;background:var(--bg);color:var(--ink)}
+.xaL{background:#16264a;color:#fff;padding:48px;display:flex;flex-direction:column;justify-content:space-between;gap:48px}
+.xalg{display:flex;align-items:center;gap:10px;font:800 1.3rem 'Plus Jakarta Sans',sans-serif;letter-spacing:-.02em;color:#fff}
+.xam{width:32px;height:32px;border-radius:8px;background:#7fb0f5;display:grid;place-items:center}.xam svg{width:24px;height:13px;fill:none;stroke:#16264a;stroke-width:2.4}
+.xaL h2{font:800 clamp(2rem,3.4vw,3.25rem)/1.02 'Plus Jakarta Sans',sans-serif;letter-spacing:-.035em;color:#fff;margin:0 0 40px;max-width:10em}
+.xab{display:grid;gap:8px;max-width:420px}.xab div{display:flex;gap:3px;height:28px;border-radius:6px;background:rgba(255,255,255,.08);overflow:hidden}.xab i{display:block;height:100%;background:var(--c);transform-origin:left;animation:lpgrow .8s cubic-bezier(.2,.7,.2,1) both}
+.xab div:nth-child(2) i{animation-delay:.1s}.xab div:nth-child(3) i{animation-delay:.2s}.xab div:nth-child(4) i{animation-delay:.3s}
+.xaL p{font-size:.9375rem;opacity:.7;margin:0}
+.xaR{display:grid;place-items:center;padding:48px 24px}
+.xaf{width:100%;max-width:400px}.xaf h1{font:800 2rem/1.1 'Plus Jakarta Sans',sans-serif;letter-spacing:-.03em;margin:0}
+.xas{color:var(--muted);margin:8px 0 24px}
+.xpw{position:relative;display:block}.xpw input{padding-right:64px}
+.xshow{position:absolute;right:6px;top:50%;transform:translateY(-35%);border:0;background:none;color:var(--muted);font:600 .875rem Inter,sans-serif;padding:8px;cursor:pointer;border-radius:6px}.xshow:hover{color:var(--ink)}
+.xtoast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,16px);background:#16264a;color:#fff;padding:12px 20px;border-radius:8px;font:500 .9375rem Inter,sans-serif;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:50;max-width:calc(100vw - 32px)}
+.xtoast.on{opacity:1;transform:translate(-50%,0)}
+[data-theme=dark] .xtoast{background:#7fb0f5;color:#0e1527}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]) .xtoast{background:#7fb0f5;color:#0e1527}}
+@media (max-width:860px){.xa{grid-template-columns:1fr}.xaL{padding:24px;gap:24px}.xaL h2{font-size:1.75rem;margin-bottom:24px}.xab,.xaL p{display:none}.xaR{padding:32px 20px 64px;place-items:start center}}
+@media (prefers-reduced-motion:reduce){.xab i{animation:none}.xtoast{transition:none}}
+#app .sbf button{font-weight:300;opacity:.85}
+#app .xni,#app .nv{font-weight:400}#app .sbf button:hover{opacity:1}
+#landing [id]{scroll-margin-top:72px}
+</style>
+</head>
+<body>
+<div id="landing">
+<div class="lp-nav"><div class="lp-w lp-navin">
+  <a class="lp-logo" href="#top"><span class="lp-mark"><svg viewBox="410 190 925 500" aria-hidden="true"><path d="M459 655C459 600 480 550 510 510C480 430 470 330 478 270C485 230 510 222 540 235C610 265 670 330 725 395C790 372 850 365 888 365C930 365 990 372 1048 395C1105 330 1170 265 1235 235C1265 222 1290 230 1297 270C1305 330 1295 430 1265 510C1295 550 1315 600 1315 655" style="stroke-width:58;stroke-linecap:round;stroke-linejoin:round"/></svg></span>StudyCat</a>
+  <nav class="lp-links" aria-label="Sections"><a href="#how-it-works">Rebalancing</a><a href="#progress">Progress</a><a href="#resources">Resources</a><a href="#questions">Questions</a></nav>
+  <a class="lp-tl" data-go="login" href="#/login">Log in</a><a class="lp-b lp-pri" data-go="signup" href="#/signup">Sign up</a>
+</div></div>
+
+<section class="lp-s lp-hero" id="top"><div class="lp-w lp-hg"><div class="lp-hl">
+  <h1>Your MCAT plan.<br>Built for your life.</h1>
+  <div class="lp-hrow">
+    <p class="lp-lead">Enter your test date and the books you own. StudyCat spreads every chapter, question set and full-length across the days you have left.</p>
+    <div class="lp-cta"><a class="lp-b lp-pri lp-lg" data-go="signup" href="#/signup">Make my plan</a><span class="lp-fine">Free. About two minutes.</span></div>
+  </div>
+  </div><div class="lp-win lp-rv" id="planner" data-ui role="img" aria-label="Example week: study time per day as colored bars, a rest day on Friday and a full-length exam on Saturday">
+    <div class="lp-wh"><span>Week of October 26</span><span>Daily budget 4h</span></div>
+    <div class="lp-bars"><div class="lp-dr"><div class="lp-dl">Mon<b>26</b></div><div class="lp-bar"><i class="lp-sg " style="--c:var(--anki);width:6.25%"></i><i class="lp-sg " style="--c:var(--kaplan);width:18.75%">Chem 3</i><i class="lp-sg " style="--c:var(--uworld);width:15.62%">UWorld</i><i class="lp-sg " style="--c:var(--cars);width:6.25%"></i></div><div class="lp-tt">3h 45m</div></div><div class="lp-dr"><div class="lp-dl">Tue<b>27</b></div><div class="lp-bar"><i class="lp-sg " style="--c:var(--anki);width:6.25%"></i><i class="lp-sg " style="--c:var(--kaplan);width:25.00%">Chem 4–5</i><i class="lp-sg " style="--c:var(--uworld);width:15.62%">UWorld</i><i class="lp-sg " style="--c:var(--cars);width:6.25%"></i></div><div class="lp-tt">4h 15m</div></div><div class="lp-dr"><div class="lp-dl">Wed<b>28</b></div><div class="lp-bar"><i class="lp-sg " style="--c:var(--anki);width:6.25%"></i><i class="lp-sg " style="--c:var(--kaplan);width:18.75%">Phys 1</i><i class="lp-sg " style="--c:var(--uworld);width:15.62%">UWorld</i><i class="lp-sg " style="--c:var(--cars);width:6.25%"></i></div><div class="lp-tt">3h 45m</div></div><div class="lp-dr"><div class="lp-dl">Thu<b>29</b></div><div class="lp-bar"><i class="lp-sg " style="--c:var(--anki);width:6.25%"></i><i class="lp-sg " style="--c:var(--kaplan);width:25.00%">Phys 2–3</i><i class="lp-sg " style="--c:var(--uworld);width:15.62%">UWorld</i><i class="lp-sg " style="--c:var(--cars);width:6.25%"></i></div><div class="lp-tt">4h 15m</div></div><div class="lp-dr"><div class="lp-dl">Fri<b>30</b></div><div class="lp-bar"><span class="lp-restl">Rest day</span></div><div class="lp-tt">Rest</div></div><div class="lp-dr"><div class="lp-dl">Sat<b>31</b></div><div class="lp-bar"><i class="lp-sg " style="--c:var(--fl);width:93.75%;color:#16264a">Full-length exam</i></div><div class="lp-tt">7h 30m</div></div><div class="lp-dr"><div class="lp-dl">Sun<b>1</b></div><div class="lp-bar"><i class="lp-sg " style="--c:var(--anki);width:6.25%"></i><i class="lp-sg " style="--c:var(--fl);width:37.50%;color:#16264a">Full-length review</i></div><div class="lp-tt">3h 30m</div></div></div>
+    <div class="lp-key"><span style="--c:var(--anki)">Anki</span><span style="--c:var(--kaplan)">Content review</span><span style="--c:var(--uworld)">UWorld</span><span style="--c:var(--cars)">CARS</span><span style="--c:var(--fl)">Full-length</span></div>
+  </div>
+</div></section>
+
+<section class="lp-s lp-feat"><div class="lp-w lp-fgrid">
+  <h2 class="lp-fh lp-rv">One plan for everything you study.</h2>
+  <div class="lp-win lp-today lp-rv" data-ui>
+    <div class="lp-wh"><span>Today</span><span>1 of 5 done</span></div>
+    <label class="lp-task"><input type="checkbox" checked><i style="--c:var(--anki)"></i><span><b>Anki review</b>Due cards, 30 minutes</span><em>30 min</em></label>
+    <label class="lp-task"><input type="checkbox"><i style="--c:var(--kaplan)"></i><span><b>Biochemistry, chapter 3</b>Amino acids, peptides and proteins</span><em>45 min</em></label>
+    <label class="lp-task"><input type="checkbox"><i style="--c:var(--uworld)"></i><span><b>UWorld, 20 questions</b>Read every explanation</span><em>60 min</em></label>
+    <label class="lp-task"><input type="checkbox"><i style="--c:var(--cars)"></i><span><b>CARS passage set</b>Two passages, timed</span><em>30 min</em></label>
+    <label class="lp-task"><input type="checkbox"><i style="--c:var(--aamc)"></i><span><b>AAMC question pack, section 2</b>Review every missed question</span><em>45 min</em></label>
+  </div>
+  <div class="lp-fl lp-rv">
+    <div><i class="lp-tk" style="--c:var(--kaplan)"></i><h3>Add what you own</h3><p>Books, question banks, the Khan Academy doc, or your own resources.</p></div>
+    <div><i class="lp-tk" style="--c:var(--anki)"></i><h3>Set your hours</h3><p>Choose daily time and rest days. Anything that won’t fit is flagged.</p></div>
+    <div><i class="lp-tk" style="--c:var(--uworld)"></i><h3>Miss a day, keep going</h3><p>Unfinished work moves to the days you have left.</p></div>
+    <div><i class="lp-tk" style="--c:var(--cars)"></i><h3>Track your scores</h3><p>Log practice exams and the topics you keep missing.</p></div>
+    <a class="lp-b lp-pri lp-lg" data-go="signup" href="#/signup">Make my plan</a>
+  </div>
+</div></section>
+
+<section class="lp-s lp-tone" id="how-it-works"><div class="lp-w lp-rbg">
+  <div class="lp-rbl">
+    <h2 class="lp-rv">Miss a Monday. Lose nothing.</h2>
+    <p class="lp-rv">Drag to change how many UWorld questions you missed. The rest are spread over the days you have left, and anything you finished stays put.</p>
+    <div class="lp-rng lp-rv"><div class="lp-rngr"><input id="lp-miss" type="range" min="0" max="60" step="3" value="21" aria-label="Questions missed on Monday"><output id="lp-mo" for="lp-miss">21</output><span>questions missed on Monday</span></div></div>
+  </div>
+  <div class="lp-win lp-rv" data-ui><div class="lp-wh"><span>This week after rebalancing</span><span id="lp-sum">7 questions added to each day</span></div><div class="lp-bars" id="lp-rb"><div class="lp-dr"><div class="lp-dl">Mon<b>26</b></div><div class="lp-bar"><i class="lp-sg " style="--c:var(--anki);width:9.09%"></i><i class="lp-sg lp-miss" style="--c:var(--uworld);width:38.18%">21 missed</i></div><div class="lp-tt">Anki done</div></div><div class="lp-dr"><div class="lp-dl">Tue<b>27</b></div><div class="lp-bar"><i class="lp-sg " style="--c:var(--anki);width:9.09%"></i><i class="lp-sg " style="--c:var(--kaplan);width:27.27%">Chem 4</i><i class="lp-sg " style="--c:var(--uworld);width:18.18%">UWorld</i><i class="lp-sg lp-mv" style="--c:var(--uworld);width:12.73%">+7</i></div><div class="lp-tt">3h 42m</div></div><div class="lp-dr"><div class="lp-dl">Wed<b>28</b></div><div class="lp-bar"><i class="lp-sg " style="--c:var(--anki);width:9.09%"></i><i class="lp-sg " style="--c:var(--kaplan);width:27.27%">Phys 1</i><i class="lp-sg " style="--c:var(--uworld);width:18.18%">UWorld</i><i class="lp-sg lp-mv" style="--c:var(--uworld);width:12.73%">+7</i></div><div class="lp-tt">3h 42m</div></div><div class="lp-dr"><div class="lp-dl">Thu<b>29</b></div><div class="lp-bar"><i class="lp-sg " style="--c:var(--anki);width:9.09%"></i><i class="lp-sg " style="--c:var(--kaplan);width:27.27%">Phys 2</i><i class="lp-sg " style="--c:var(--uworld);width:18.18%">UWorld</i><i class="lp-sg lp-mv" style="--c:var(--uworld);width:12.73%">+7</i></div><div class="lp-tt">3h 42m</div></div></div></div>
+</div></section>
+
+<section class="lp-s lp-stats"><div class="lp-w lp-stg">
+  <div class="lp-stl"><h2 class="lp-rv">Every day,<br>counted.</h2><p class="lp-rv">Each square is a day between now and your test. Dark squares are study days, pale ones are rest days, and light blue are behind you.</p></div>
+  <div class="lp-stv lp-rv">
+    <div class="lp-days" role="img" aria-label="98 days to test day, 84 of them study days"><i class="d"></i><i class="d"></i><i class="d"></i><i class="d"></i><i class="r"></i><i class="d"></i><i class="d"></i><i class="d"></i><i class="d"></i><i class="d"></i><i class="d"></i><i class="r"></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class="r"></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class="r"></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class="r"></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class="r"></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class="r"></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class="r"></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class="r"></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class="r"></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class="r"></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class="r"></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class="r"></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class="r"></i><i class=""></i><i class=""></i></div>
+    <dl class="lp-led">
+      <div><dt>98</dt><dd>days to an example test date, January 30</dd></div>
+      <div><dt>84</dt><dd>study days with one rest day a week</dd></div>
+      <div><dt>4h</dt><dd>a day at most, or the budget you set</dd></div>
+      <div><dt>7</dt><dd>kinds of work, each with its own color</dd></div>
+    </dl>
+  </div>
+</div></section>
+
+<section class="lp-s lp-tone" id="progress"><div class="lp-w lp-pg">
+  <div class="lp-pgt"><h2 class="lp-rv">What’s done.<br>What’s weak.</h2>
+  <p class="lp-rv">Log each practice exam and tag the topics you keep missing. Your plan shows both next to how far through each resource you are.</p></div>
+  <div class="lp-win lp-led2 lp-rv" data-ui>
+    <div class="lp-wh"><span>Progress</span><span>Example plan</span></div>
+    <div class="lp-lg2">
+      <div>
+        <div class="lp-pr"><span>Content review</span><b>34 of 50 chapters</b><div class="lp-pb" style="--c:var(--kaplan)"><i style="width:68%"></i></div></div>
+        <div class="lp-pr"><span>UWorld</span><b>1,260 of 3,000 questions</b><div class="lp-pb" style="--c:var(--uworld)"><i style="width:42%"></i></div></div>
+        <div class="lp-pr"><span>AAMC question packs</span><b>2 of 8 packs</b><div class="lp-pb" style="--c:var(--aamc)"><i style="width:24%"></i></div></div>
+        <div class="lp-pr"><span>Khan Academy document</span><b>165 of 300 pages</b><div class="lp-pb" style="--c:var(--cars)"><i style="width:55%"></i></div></div>
+      </div>
+      <div class="lp-sc">
+        <table><caption>Practice exams. Target 515</caption>
+          <thead><tr><th scope="col">Exam</th><th scope="col">Date</th><th scope="col">Score</th></tr></thead>
+          <tbody><tr><td>AAMC full-length 1</td><td>Sep 14</td><td>503</td></tr><tr><td>AAMC full-length 2</td><td>Oct 3</td><td>507</td></tr><tr><td>Blueprint full-length 3</td><td>Oct 17</td><td>509</td></tr></tbody></table>
+        <p class="lp-weak"><b>Keeps coming up:</b> enzyme kinetics, passage mapping, thermodynamics</p>
+      </div>
+    </div>
+  </div>
+</div></section>
+
+<section class="lp-s" id="resources"><div class="lp-w lp-rsg">
+  <h2 class="lp-rv">Use the books<br>you own.</h2>
+  <dl class="lp-res lp-rv">
+    <div><dt>Content review</dt><dd>Kaplan or Princeton Review, listed by real chapter title.</dd></div>
+    <div><dt>Question banks</dt><dd>UWorld and AAMC packs, counted in questions.</dd></div>
+    <div><dt>Khan Academy document</dt><dd>The 300-page doc, counted in pages.</dd></div>
+    <div><dt>Your own</dt><dd>Count it in chapters, pages, questions or hours.</dd></div>
+    <div><dt>Full-length exams</dt><dd>Grouped by provider: AAMC, Blueprint, Kaplan and more.</dd></div>
+    <div><dt>Anki and CARS</dt><dd>Daily minutes, scheduled around everything else.</dd></div>
+  </dl>
+</div></section>
+
+<section class="lp-s" id="questions"><div class="lp-w">
+  <h2 class="lp-qh lp-rv">Before you make your plan</h2>
+  <div class="lp-faq lp-rv">
+    <details><summary>What can I include in my plan?</summary><p>Content review books, UWorld and AAMC question practice, the Khan Academy document, Anki, daily CARS, full-length exams, and any resource you add yourself.</p></details>
+    <details><summary>What if everything won’t fit?</summary><p>StudyCat flags the work that exceeds your available hours so you can change your workload, daily time, rest days, or test date.</p></details>
+    <details><summary>Where is my plan saved?</summary><p>Your plan and progress are saved to your account, so they follow you to any device.</p></details>
+    <details><summary>Can I use Princeton Review instead of Kaplan?</summary><p>Yes. Choose Kaplan, Princeton Review, or no content review books, and the chapter list follows your choice.</p></details>
+  </div>
+</div></section>
+
+<section class="lp-fin"><div class="lp-w lp-fg">
+  <h2 class="lp-rv">Your next day,<br>planned.</h2>
+  <div class="lp-fb"><p>Set your deadline. We’ll work back from there.</p><a class="lp-b lp-sky lp-lg" data-go="signup" href="#/signup">Make my plan</a></div>
+  <div class="lp-foot"><span>StudyCat</span><span>Not affiliated with AAMC, Kaplan, UWorld, Princeton Review, Blueprint, or Khan Academy.</span></div>
+</div></section>
+</div>
+<div id="app" hidden></div>
+<script>
+(function(){
+const L=document.getElementById('landing'),A=document.getElementById('app');
+let db={users:{},cur:null};try{db=JSON.parse(localStorage.getItem('sc'))||db}catch(e){}
+const save=()=>{try{localStorage.setItem('sc',JSON.stringify(db))}catch(e){}};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const iso=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+const P=s=>new Date(s+'T00:00:00'),AD=(d,n)=>{const x=new Date(d);x.setDate(x.getDate()+n);return x};
+const TY={k:['Kaplan','k'],u:['UWorld','u'],a:['AAMC','a'],f:['Full-Length Exam','f'],fr:['Full-Length Review','fr'],an:['Anki','an'],c:['CARS','c'],w:['Weakness Review','w'],dc:['Khan Academy doc','dc'],cs:['Your resources','cs']};
+const QS=[['Which enzyme catalyzes the rate-limiting step of glycolysis?',['Hexokinase','Phosphofructokinase-1','Pyruvate kinase','GAPDH'],1,'PFK-1 is the main control point; it is inhibited by ATP and citrate and activated by AMP and fructose-2,6-bisphosphate.'],
+['An exothermic reaction at equilibrium is heated. What happens to the equilibrium?',['Shifts toward products','Shifts toward reactants','No change','K increases'],1,'Treat heat as a product. Adding heat shifts the reaction toward reactants, and K decreases.'],
+['An ideal fluid flows steadily through a pipe whose radius doubles. The flow speed becomes:',['Half','One quarter','Double','Four times'],1,'Continuity: A1v1=A2v2. Area scales with r², so doubling r makes the area 4x and the speed 1/4.'],
+['A dog salivates to a tone after the tone was repeatedly paired with food. The tone is a:',['Unconditioned stimulus','Conditioned stimulus','Conditioned response','Negative reinforcer'],1,'The tone began neutral and now triggers salivation, so it is the conditioned stimulus.'],
+['An amino acid is in a solution whose pH is below its pI. Its net charge is:',['Positive','Negative','Zero','Cannot be determined'],0,'Below the pI there are more protons, so groups are protonated and the net charge is positive.'],
+['Which substrate reacts fastest in an SN2 reaction?',['Methyl bromide','Ethyl bromide','Isopropyl bromide','tert-Butyl bromide'],0,'SN2 needs backside attack, so less steric hindrance means a faster reaction: methyl > primary > secondary >> tertiary.']];
+function gen(o){const T=[],td=new Date();td.setHours(0,0,0,0);const end=P(o.date),days=[];
+for(let d=new Date(td);d<end;d=AD(d,1))if(d.getDay()!=+o.rest)days.push(iso(d));
+const n=days.length;if(!n)return T;let id=0;const add=(date,t,label,min)=>T.push({id:id++,date,t,label,min,done:false});
+const sp=Math.max(1,Math.floor(n*.6)),fd=new Set();
+if(o.fl>0)for(let i=0;i<o.fl;i++){const x=sp+Math.floor((i+.5)*(n-sp-1)/o.fl);if(x+1<n&&x>=0&&!fd.has(days[x])){fd.add(days[x]);fd.add(days[x+1]);add(days[x],'f','Practice exam '+(i+1),450);add(days[x+1],'fr','Review exam '+(i+1),180)}}
+const ex=new Set(T.filter(t=>t.t=='f').map(t=>t.date));
+const dist=(list,tot,cb)=>{const m=list.length;if(!m||!tot)return;for(let j=0;j<m;j++){const q=Math.floor((j+1)*tot/m)-Math.floor(j*tot/m);if(q>0)cb(list[j],q)}};
+days.forEach(d=>{if(o.anki>0)add(d,'an',o.anki+' minutes',+o.anki);if(o.cars>0&&!ex.has(d))add(d,'c',o.cars+' minutes',+o.cars)});
+dist(days.slice(0,sp).filter(d=>!fd.has(d)),+o.k,(d,q)=>add(d,'k',q+(q>1?' chapters':' chapter'),q*45));
+dist(days.slice(0,Math.max(1,Math.round(n*.75))).filter(d=>!fd.has(d)),+o.u,(d,q)=>add(d,'u',q+' questions',Math.ceil(q*1.5)));
+dist(days.slice(sp).filter(d=>!fd.has(d)),+o.a,(d,q)=>add(d,'a',q+' questions',Math.ceil(q*1.5)));
+return T}
+function over(T,cap){const m={},f=new Set(T.filter(t=>t.t=='f').map(t=>t.date));T.forEach(t=>m[t.date]=(m[t.date]||0)+t.min);return Object.keys(m).filter(d=>!f.has(d)&&m[d]>cap).length}
+let wk=0,pq={i:0,sel:null,sc:0};
+const fmt=(s,o)=>P(s).toLocaleDateString('en-US',o||{weekday:'short',month:'short',day:'numeric'});
+const chip=t=>`<span class="chip ${TY[t][1]}">${TY[t][0]}</span>`;
+function authView(m){const s=m=='signup';const bars=[[['--anki',8],['--kaplan',34],['--uworld',28],['--cars',10]],[['--anki',8],['--kaplan',44],['--uworld',22]],[['--anki',8],['--fl',70]],[['--anki',8],['--kaplan',30],['--uworld',34],['--cars',10]]];
+A.innerHTML=`<div class="xa"><aside class="xaL"><a class="xalg" href="#"><span class="xam"><svg viewBox="410 190 925 500" aria-hidden="true"><path d="M459 655C459 600 480 550 510 510C480 430 470 330 478 270C485 230 510 222 540 235C610 265 670 330 725 395C790 372 850 365 888 365C930 365 990 372 1048 395C1105 330 1170 265 1235 235C1265 222 1290 230 1297 270C1305 330 1295 430 1265 510C1295 550 1315 600 1315 655" style="stroke-width:58;stroke-linecap:round;stroke-linejoin:round"/></svg></span>StudyCat</a><div><h2>Your MCAT plan. Built for your life.</h2><div class="xab" aria-hidden="true">${bars.map(r=>`<div>${r.map(x=>`<i style="--c:var(${x[0]});width:${x[1]}%"></i>`).join('')}</div>`).join('')}</div></div><p>Free. Your plan and progress stay in this browser.</p></aside><main class="xaR"><div class="xaf"><h1>${s?'Make your account':'Welcome back'}</h1><p class="xas">${s?'Takes about two minutes. You’ll set your test date next.':'Pick up where you left off.'}</p><form data-f="auth" data-m="${m}">${s?'<label class="f">Name<input type="text" name="name" autocomplete="given-name"></label>':''}<label class="f">Email<input type="email" name="email" required autocomplete="email"></label><label class="f">Password<span class="xpw"><input type="password" name="pw" required minlength="6" autocomplete="${s?'new-password':'current-password'}"><button type="button" class="xshow" data-a="pwt" aria-label="Show password">Show</button></span></label><div class="err" role="alert"></div><button class="btn primary lg" style="width:100%;margin-top:8px">${s?'Sign up':'Log in'}</button></form><p class="note">${s?'Have an account? <a href="#/login" style="text-decoration:underline">Log in</a>':'New here? <a href="#/signup" style="text-decoration:underline">Sign up</a>'}</p></div></main></div>`}
+function wizard(){const d=iso(AD(new Date(),90));return `<div class="card" style="max-width:560px;margin:0 auto"><h2 style="font-size:1.6rem">Make your plan</h2><p class="note">Set your deadline. We’ll work back from there.</p><form data-f="wiz"><label class="f">MCAT date<input type="date" name="date" value="${d}" required></label><div class="g2"><label class="f">Study hours per day<input type="number" name="hrs" value="6" min="1" max="12" step="0.5"></label><label class="f">Rest day<select name="rest"><option value="5">Friday</option><option value="0">Sunday</option><option value="1">Monday</option><option value="2">Tuesday</option><option value="3">Wednesday</option><option value="4">Thursday</option><option value="6">Saturday</option><option value="-1">None</option></select></label></div><div class="g2"><label class="f">Kaplan chapters<input type="number" name="k" value="82" min="0"></label><label class="f">UWorld questions<input type="number" name="u" value="2400" min="0"></label><label class="f">AAMC questions<input type="number" name="a" value="1002" min="0"></label><label class="f">Full-length exams<input type="number" name="fl" value="7" min="0"></label><label class="f">Anki minutes/day<input type="number" name="anki" value="45" min="0"></label><label class="f">CARS minutes/day<input type="number" name="cars" value="30" min="0"></label></div><div class="err"></div><button class="btn primary lg" style="width:100%">Make my plan</button></form></div>`}
+function plan(u){const T=u.plan.tasks,o=u.plan.opts,td=iso(new Date()),cap=o.hrs*60;
+const mon=AD(new Date(),-((new Date().getDay()+6)%7)+wk*7),miss=T.filter(t=>!t.done&&t.date<td).length,ov=over(T,cap);
+const tt=T.filter(t=>t.date==td);
+let h=`<div class="week-head"><h2 style="font-size:1.7rem">${wk==0?'This week':'Week of '+fmt(iso(mon))}</h2><div><button class="btn" data-a="wk" data-n="-1">‹</button> <button class="btn" data-a="wk" data-n="0">Today</button> <button class="btn" data-a="wk" data-n="1">›</button></div></div><p class="note">${tt.length?`Today: ${tt.filter(t=>t.done).length} of ${tt.length} complete.`:'Nothing scheduled today.'} Test day: ${fmt(o.date,{month:'long',day:'numeric',year:'numeric'})}</p>`;
+if(miss)h+=`<div class="warn">${miss} unfinished session${miss>1?'s':''} from earlier days. <button class="btn" data-a="reb" style="margin-left:8px">Rebalance</button></div>`;
+if(ov)h+=`<div class="warn">${ov} day${ov>1?'s exceed':' exceeds'} your ${o.hrs}h budget. Adjust your workload, daily time, rest days, or test date.</div>`;
+for(let i=0;i<7;i++){const d=iso(AD(mon,i)),ts=T.filter(t=>t.date==d);h+=`<div class="card dc ${d==td?'today':''}"><h4>${fmt(d)}${d==td?' · Today':''}</h4>`;
+if(d==o.date)h+='<p>Test day. You’ve got this.</p>';else if(!ts.length)h+=`<span class="chip r">${P(d).getDay()==o.rest?'Rest day':'Nothing scheduled'}</span>`;
+ts.forEach(t=>h+=`<label class="trow ${t.done?'dn':''}"><input type="checkbox" data-a="tog" data-id="${t.id}" ${t.done?'checked':''}>${chip(t.t)}<span>${t.label}</span>${t.moved&&!t.done?'<em>Rescheduled</em>':''}<small>${t.min>=60?Math.floor(t.min/60)+'h '+(t.min%60?t.min%60+'m':''):t.min+'m'}</small></label>`);h+='</div>'}return h}
+function prog(u){const T=u.plan.tasks,sum=a=>a.reduce((s,t)=>s+t.min,0),dn=T.filter(t=>t.done),days=Math.max(0,Math.ceil((P(u.plan.opts.date)-new Date())/864e5));
+let h=`<h2 style="font-size:1.7rem">Your progress</h2><div class="g3" style="margin-top:16px"><div class="card"><div class="stats"><div><b>${(sum(dn)/60).toFixed(1)}h</b><small>studied</small></div></div></div><div class="card"><div class="stats"><div><b>${Math.round(100*dn.length/Math.max(1,T.length))}%</b><small>sessions done</small></div></div></div><div class="card"><div class="stats"><div><b>${days}</b><small>days to test</small></div></div></div></div><div class="card dc">`;
+Object.keys(TY).forEach(k=>{const a=T.filter(t=>t.t==k);if(!a.length)return;const p=Math.round(100*sum(a.filter(t=>t.done))/sum(a));h+=`<div class="prog"><div class="r2"><span>${TY[k][0]}</span><b>${p}%</b></div><div class="bar ${TY[k][1]}"><i style="width:${p}%"></i></div></div>`});
+h+='</div><div class="card dc"><h4>Practice scores</h4>'+(u.scores.length?u.scores.slice(-8).reverse().map(s=>`<div class="row"><span>${fmt(s.d)}</span><b>${s.s}/${s.n}</b></div>`).join(''):'<p class="note">No scores yet. Try the Practice tab.</p>')+'</div>';return h}
+function practice(u){if(pq.i>=QS.length)return `<div class="card center"><h2>Score: ${pq.sc}/${QS.length}</h2><p class="sub">Saved to your progress.</p><button class="btn primary lg" style="margin-top:20px" data-a="again">Practice again</button></div>`;
+const q=QS[pq.i];return `<div class="card"><p class="note">Question ${pq.i+1} of ${QS.length}</p><h3 style="font-size:1.3rem;margin:8px 0 6px">${q[0]}</h3>${q[1].map((o,i)=>`<button class="opt ${pq.sel==null?'':i==q[2]?'ok':i==pq.sel?'no':''}" data-a="pick" data-i="${i}" ${pq.sel!=null?'disabled':''}>${String.fromCharCode(65+i)}. ${o}</button>`).join('')}${pq.sel!=null?`<p style="margin-top:16px"><b>${pq.sel==q[2]?'Correct.':'Not quite.'}</b> ${q[3]}</p><button class="btn primary" style="margin-top:12px" data-a="next">${pq.i==QS.length-1?'Finish':'Next question'}</button>`:''}</div><p class="note">These are original sample questions, not official AAMC material. Use the AAMC’s own products for official practice.</p>`}
+function settings(u){return `<h2 style="font-size:1.7rem">Settings</h2><div class="card dc"><p>Signed in as <b>${esc(db.cur)}</b></p><button class="btn" style="margin-top:14px" data-a="out">Log out</button></div><div class="card dc"><p>Rebuild your schedule from scratch with new dates or workloads. Your completed sessions will be cleared.</p><button class="btn" style="margin-top:14px" data-a="reset">Delete plan and start over</button></div>`}
+function appView(u,tab){const tabs=[['plan','Planner'],['progress','Progress'],['practice','Practice'],['settings','Settings']];
+const b=!u.plan&&(tab=='plan'||tab=='progress')?wizard():tab=='progress'?prog(u):tab=='practice'?practice(u):tab=='settings'?settings(u):plan(u);
+A.innerHTML=`<div class="topbar"><div class="wrap"><a class="logo" href="#">StudyCat</a>${tabs.map(t=>`<a class="tab ${t[0]==tab?'on':''}" href="#/app/${t[0]}">${t[1]}</a>`).join('')}</div></div><div class="wrap pg">${b}</div>`}
+const act={
+tog(b){const t=cu().plan.tasks.find(x=>x.id==b.dataset.id);t.done=b.checked;save();route()},
+wk(b){wk=b.dataset.n==0?0:wk+ +b.dataset.n;route()},
+reb(){const u=cu(),T=u.plan.tasks,td=iso(new Date()),end=u.plan.opts.date,ex=new Set(T.filter(t=>t.t=='f'||t.t=='fr').map(t=>t.date));
+const fut=[...new Set(T.map(t=>t.date))].filter(d=>d>=td&&d<end&&!ex.has(d));if(!fut.length){for(let i=0;i<30;i++){const d=iso(AD(new Date(),i));if(d<end&&P(d).getDay()!=u.plan.opts.rest)fut.push(d)}}
+if(!fut.length)return;const load={};fut.forEach(d=>load[d]=0);T.forEach(t=>{if(load[t.date]!=null)load[t.date]+=t.min});
+T.filter(t=>!t.done&&t.date<td).sort((a,b)=>a.date<b.date?-1:1).forEach(t=>{const d=fut.reduce((m,x)=>load[x]<load[m]?x:m,fut[0]);t.date=d;t.moved=true;load[d]+=t.min});save();route()},
+out(){db.cur=null;save();location.hash='#/login'},
+reset(){cu().plan=null;save();location.hash='#/app/plan'},
+pick(b){pq.sel=+b.dataset.i;if(pq.sel==QS[pq.i][2])pq.sc++;route()},
+next(){pq.i++;pq.sel=null;if(pq.i>=QS.length){cu().scores.push({d:iso(new Date()),s:pq.sc,n:QS.length});save()}route()},
+again(){pq={i:0,sel:null,sc:0};route()},
+auth(f){const m=f.dataset.m,e=f.email.value.trim().toLowerCase(),p=f.pw.value,er=f.querySelector('.err');
+if(m=='signup'){if(db.users[e]){er.textContent='That email already has an account. Log in instead.';return}db.users[e]={pw:p,plan:null,scores:[],name:f.elements.namedItem('name')?f.elements.namedItem('name').value.trim():''}}
+else if(!db.users[e]||db.users[e].pw!==p){er.textContent='Email or password is incorrect.';return}
+db.cur=e;save();location.hash='#/app/plan'},
+wiz(f){const o=Object.fromEntries(new FormData(f)),er=f.querySelector('.err');if(o.date<=iso(new Date())){er.textContent='Pick a test date after today.';return}
+o.hrs=+o.hrs;const T=gen(o);if(!T.length){er.textContent='No study days fit before that date. Pick a later date.';return}cu().plan={opts:o,tasks:T};save();wk=0;route()}};
+const cu=()=>db.users[db.cur];
+const dm=m=>{m=Math.round(m);const h=Math.floor(m/60),r=m%60;return (h?h+'h':'')+(h&&r?' ':'')+(r?r+'m':'')||'0m'};
+const SB=['Physics','Psych/Soc','CARS','Biology','Biochem','Gen Chem','Org Chem'],KT={'Physics 1':'Kinematics and Dynamics','Psych/Soc 1':'Biology and Behavior','CARS 1':'Introduction to CARS','Biology 1':'The Cell','Biology 2':'Reproduction','Biochemistry 1':'Amino Acids, Peptides, and Proteins'};
+const kn=i=>{const k=SB[i%7]+' '+(Math.floor(i/7)+1);return 'Kaplan '+SB[i%7]+' Ch. '+(Math.floor(i/7)+1)+(KT[k]?': '+KT[k]:'')};
+function gen(o){const T=[],td=new Date();td.setHours(0,0,0,0);const end=P(o.date),days=[];
+for(let d=new Date(td);d<end;d=AD(d,1))if(d.getDay()!=+o.rest)days.push(iso(d));
+const n=days.length;if(!n)return T;let id=0;const add=(date,t,label,min,x)=>T.push(Object.assign({id:id++,date,t,label,min,done:false,cnt:0},x));
+const sp=Math.max(1,Math.floor(n*.6)),fd=new Set();
+for(let i=0;i<o.fl;i++){const x=sp+Math.floor((i+.5)*(n-sp-1)/o.fl);if(x+1<n&&!fd.has(days[x])){fd.add(days[x]);fd.add(days[x+1]);add(days[x],'f','Full-length practice exam '+(i+1),450,{desc:'Take it under real test conditions'});add(days[x+1],'fr','Review exam '+(i+1),180,{desc:'Review every missed and guessed question'})}}
+const ex=new Set(T.filter(t=>t.t=='f').map(t=>t.date));
+const dist=(list,tot,cb)=>{const m=list.length;if(!m||!tot)return;for(let j=0;j<m;j++){const q=Math.floor((j+1)*tot/m)-Math.floor(j*tot/m);if(q>0)cb(list[j],q)}};
+let ci=0;dist(days.slice(0,sp).filter(d=>!fd.has(d)),+o.k,(d,q)=>{for(let i=0;i<q;i++)add(d,'k',kn(ci++),150,{desc:'Read, take notes, and do end-of-chapter questions'})});
+days.forEach(d=>{if(!ex.has(d)&&o.cars>0){const p=Math.max(1,Math.round(o.cars/15));add(d,'c',p+' CARS Passages',+o.cars,{desc:'Timed passages, then annotate why each answer is right',n:p,unit:'passages'})}
+if(o.anki>0){const c=Math.round(o.anki*4.4/10)*10;add(d,'an','Anki Reviews',+o.anki,{desc:"Clear today's due cards (about "+c+")",n:c,unit:'cards'})}});
+dist(days.slice(0,Math.max(1,Math.round(n*.75))).filter(d=>!fd.has(d)),+o.u,(d,q)=>add(d,'u',q+' UWorld questions',Math.ceil(q*1.5),{desc:'Timed blocks, then review every explanation',n:q,unit:'questions'}));
+dist(days.slice(sp).filter(d=>!fd.has(d)),+o.a,(d,q)=>add(d,'a',q+' AAMC questions',Math.ceil(q*1.5),{desc:'Official practice, then review every explanation',n:q,unit:'questions'}));
+return T}
+const ICO={today:'M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z',calendar:'M4 6h16v14H4zM4 10h16M8 3v4M16 3v4',progress:'M4 4v16h16M8 15l4-4 3 3 5-6',anki:'M9.5 4A3 3 0 006.6 6.2 3 3 0 004.5 11a3 3 0 001.6 4.6A3 3 0 009.5 20 2.5 2.5 0 0012 17.5v-12A2.5 2.5 0 009.5 4zM14.5 4A3 3 0 0117.4 6.2 3 3 0 0119.5 11a3 3 0 01-1.6 4.6A3 3 0 0114.5 20 2.5 2.5 0 0112 17.5',setup:'M4 7h6M14 7h6M4 17h10M18 17h2M10 7a2 2 0 104 0 2 2 0 10-4 0M14 17a2 2 0 104 0 2 2 0 10-4 0',trophy:'M8 4h8v5a4 4 0 01-8 0zM12 13v4M8 20h8',exams:'M8 4h8v5a4 4 0 01-8 0zM12 13v4M8 20h8',weak:'M12 3a9 9 0 100 18 9 9 0 000-18zM12 8a4 4 0 100 8 4 4 0 000-8z',target:'M12 3a9 9 0 100 18 9 9 0 000-18zM12 8a4 4 0 100 8 4 4 0 000-8z'};
+const ic=k=>`<svg viewBox="0 0 24 24"><path d="${ICO[k]}"/></svg>`;
+const XI={'layout-dashboard':'<rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/>','calendar-days':'<path d="M8 2v3"/><path d="M16 2v3"/><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M8 13h.01"/><path d="M12 13h.01"/><path d="M16 13h.01"/><path d="M8 17h.01"/><path d="M12 17h.01"/><path d="M16 17h.01"/>','chart-line':'<path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="m19 9-5 5-4-4-3 3"/>','brain':'<path d="M12 18V5"/><path d="M15 13a4.17 4.17 0 0 1-3-4 4.17 4.17 0 0 1-3 4"/><path d="M17.598 6.5A3 3 0 1 0 12 5a3 3 0 1 0-5.598 1.5"/><path d="M17.997 5.125a4 4 0 0 1 2.526 5.77"/><path d="M18 18a4 4 0 0 0 2-7.464"/><path d="M19.967 17.483A4 4 0 1 1 12 18a4 4 0 1 1-7.967-.517"/><path d="M6 18a4 4 0 0 1-2-7.464"/><path d="M6.003 5.125a4 4 0 0 0-2.526 5.77"/>','sliders-horizontal':'<path d="M10 5H3"/><path d="M12 19H3"/><path d="M14 3v4"/><path d="M16 17v4"/><path d="M21 12h-9"/><path d="M21 19h-5"/><path d="M21 5h-7"/><path d="M8 10v4"/><path d="M8 12H3"/>','trophy':'<path d="M10 14.66V17a1 1 0 0 1-1 1 2 2 0 0 0-2 2v2"/><path d="M14 14.66V17a1 1 0 0 0 1 1 2 2 0 0 1 2 2v2"/><path d="M17.916 10H19.5A2.5 2.5 0 0 0 22 7.5V5a1 1 0 0 0-1-1h-3"/><path d="M4 22h16"/><path d="M6 9a6 6 0 0 0 12 0V3a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1z"/><path d="M6.084 10H4.5A2.5 2.5 0 0 1 2 7.5V5a1 1 0 0 1 1-1h3"/>','target':'<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>','cloud-check':'<path d="m17 15-5.5 5.5L9 18"/><path d="M5.516 16.07A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 3.501 7.327"/>','moon':'<path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401"/>','arrow-right':'<path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>','calendar-off':'<path d="M16 2v3"/><path d="m2 2 20 20"/><path d="M21 9h-5.5"/><path d="M3 9h6"/><path d="M3.586 3.586A2 2 0 003 5v14a2 2 0 002 2h14a2 2 0 001.414-.586"/><path d="M8.656 3H19a2 2 0 012 2v10.344"/>','clock':'<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>','minus':'<path d="M5 12h14"/>','plus':'<path d="M5 12h14"/><path d="M12 5v14"/>','triangle-alert':'<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/>'};
+Object.assign(XI,{'chevron-up':'<path d="m18 15-6-6-6 6"/>','check':'<path d="M20 6 9 17l-5-5"/>','chevron-left':'<path d="m15 18-6-6 6-6"/>','chevron-right':'<path d="m9 18 6-6-6-6"/>','chevron-down':'<path d="m6 9 6 6 6-6"/>','x':'<path d="M18 6 6 18"/><path d="m6 6 12 12"/>','flame':'<path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>','calendar-check':'<path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/><path d="m9 16 2 2 4-4"/>'});
+const xi=(n,z)=>`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="${z}" height="${z}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${XI[n]}</svg>`;
+const XLOGO=`<svg viewBox="0 0 32 32" width="28" height="28" aria-hidden="true"><rect width="32" height="32" rx="9" fill="oklch(78% .1 235)"/><path d="M9 21.5c2.2-6 4-9 5.2-9s1.7 6 3.6 6 2.4-3.6 5.2-7" fill="none" stroke="oklch(22% .06 262)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+function today(u){const T=u.plan.tasks,o=u.plan.opts,td=iso(new Date()),nm=u.name||db.cur.split('@')[0],N=nm[0].toUpperCase()+nm.slice(1),hr=new Date().getHours(),gr=hr<12?'morning':hr<18?'afternoon':'evening';
+const left=Math.max(0,Math.round((P(o.date)-P(td))/864e5)),sd=new Set(T.filter(t=>t.date>=td).map(t=>t.date)).size,start=T.reduce((m,t)=>t.date<m?t.date:m,td),tot=Math.max(1,P(o.date)-P(start)),pos=d=>Math.max(0,Math.min(100,100*(P(d)-P(start))/tot));
+const nf=T.filter(t=>t.t=='f'&&!t.done&&t.date>=td).sort((a,b)=>a.date<b.date?-1:1)[0],kt=T.filter(t=>t.t=='k'),ce=kt.reduce((m,t)=>t.date>m?t.date:m,start),at=T.filter(t=>t.t=='a').reduce((m,t)=>t.date<m?t.date:m,'9999'),as=at=='9999'?ce:at;
+const phase=kt.some(t=>!t.done)?'Content Review':'AAMC Preparation',pc=Math.round(pos(td));
+const bh=T.filter(t=>!t.done&&t.date<td),tt=T.filter(t=>t.date==td),dn=tt.filter(t=>t.done).length;
+const sum=(a,f)=>a.reduce((s,t)=>s+f(t),0),cnt=k=>sum(T.filter(t=>t.t==k),t=>t.cnt||0),tn=k=>sum(T.filter(t=>t.t==k),t=>t.n||0);
+const hrs=sum(T,t=>t.n?t.min*t.cnt/t.n:t.done?t.min:0)/60;
+const nd=[...new Set(T.filter(t=>t.date>td).map(t=>t.date))].sort()[0],nx=T.filter(t=>t.date==nd);
+const cap=o.hrs*60,fixed={};T.forEach(t=>{if('c an f fr'.split(' ').includes(t.t))fixed[t.date]=(fixed[t.date]||0)+t.min});
+const free=[...new Set(T.filter(t=>t.date>=td).map(t=>t.date))].reduce((s,d)=>s+Math.max(0,cap-(fixed[d]||0)),0),need=sum(T.filter(t=>!t.done&&['k','u','a','dc','cs'].includes(t.t)),t=>t.n?t.min*(1-t.cnt/t.n):t.min),ovr=need>free;
+const tk=t=>{const c=TY[t.t][1];return `<div class="xtk ${c} ${t.done?'dn':''}"><i class="xs"></i><input type="checkbox" class="xcb" data-a="tog" data-id="${t.id}" ${t.done?'checked':''} aria-label="Mark ${esc(t.label)} done"><div class="xtb"><p class="xt1">${t.label}</p><p class="xt2">${t.desc||''}</p><div class="xm"><span class="l">${TY[t.t][0]}</span><span class="c">${xi('clock',12)}${dm(t.min)}</span></div>${t.n?`<div class="xst"><button data-a="dec" data-id="${t.id}" aria-label="Fewer">${xi('minus',12)}</button><div class="xbar"><i style="width:${100*t.cnt/t.n}%"></i></div><button data-a="inc" data-id="${t.id}" aria-label="More">${xi('plus',12)}</button><span>${t.cnt} / ${t.n} ${t.unit}</span></div>`:''}</div></div>`};
+const pr=(l,c,a,b)=>`<div class="xpr ${c}"><div class="xrow"><span class="l"><i></i>${l}</span><span class="n">${a.toLocaleString()} / ${b.toLocaleString()}</span></div><div class="xbar"><i style="width:${b?100*a/b:0}%"></i></div></div>`;
+const fr=tt.length?dn/tt.length:0,ring=`<svg viewBox="0 0 32 32" width="32" height="32" aria-hidden="true"><circle cx="16" cy="16" r="13" fill="none" stroke="var(--xtr)" stroke-width="4"/>${fr>0?`<circle cx="16" cy="16" r="13" fill="none" stroke="oklch(60% .15 150)" stroke-width="4" stroke-linecap="round" stroke-dasharray="${(81.68*fr).toFixed(2)} 81.68" transform="rotate(-90 16 16)"/>`:''}</svg>`;
+const sh=d=>fmt(d,{month:'short',day:'numeric'});
+return `<div class="xtoday"><div class="xhd"><div><p>${new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'})}</p><h1>Good ${gr}, ${esc(N)}</h1></div><a class="xbtn" href="#/app/calendar">Open calendar ${xi('arrow-right',16)}</a></div>
+<section class="xhero"><div class="xhin"><div class="xhl"><p class="a">Days until your MCAT</p><p class="n">${left}</p><p class="d">${fmt(o.date,{weekday:'long',month:'long',day:'numeric',year:'numeric'})}</p></div><div class="xhr"><dl class="xhs"><div><dt>Weeks left</dt><dd>${(left/7).toFixed(1)}</dd></div><div><dt>Study days</dt><dd>${sd}</dd></div><div><dt>Next full-length</dt><dd>${nf?sh(nf.date):'—'}</dd></div></dl><div class="xhp"><div class="t"><span>Current phase: ${phase}</span><span>${pc}% of the way there</span></div><div class="xhb"><i style="width:${pc}%"></i></div></div></div></div></section>
+${bh.length?`<div class="xban"><div><p class="t">You're ${bh.length} task${bh.length>1?'s':''} behind (${dm(sum(bh,t=>t.min))} of work)</p><p class="xsub">Rebalancing spreads unfinished work across your upcoming study days. Everything you've checked off stays put.</p></div><button class="xbtn pr" data-a="reb" data-t="0">Rebalance plan</button></div>`:''}
+<div class="xgrid"><div class="xcol"><div class="xcard"><div class="xch"><div><h3>Today's checklist</h3><p class="xsub">${dn} of ${tt.length} done · ${dm(sum(tt,t=>t.min))} planned</p></div><div class="xchr">${ring}<button class="xbtn gh" data-a="reb" data-t="1">${xi('calendar-off',16)}Can't study today</button></div></div>${tt.length?`<div class="xtl">${tt.map(tk).join('')}</div>`:'<p class="xsub">Nothing scheduled today. Enjoy the break.</p>'}</div>
+<div class="xcard"><h3>Up next${nd?' · '+fmt(nd,{weekday:'long',month:'short',day:'numeric'}):''}</h3>${nx.length?`<ul class="xnx">${nx.map(t=>`<li class="${TY[t.t][1]}"><i></i><span>${t.label}</span><small>${dm(t.min)}</small></li>`).join('')}</ul>`:'<p class="xsub">Nothing else scheduled.</p>'}</div>
+<div class="xcard"><div class="xhh"><h3>Your study phases</h3><p class="xsub">Phases overlap so content, practice, and AAMC material build on each other. Full-lengths are woven in with a review day after each.</p></div><div class="xphs"><div class="xph"><div><p class="a">Content Review</p><p class="b">${sh(start)} – ${sh(ce)}</p></div><div class="xtrk"><i class="f" style="left:0;width:${pos(ce)}%;background:oklch(57% .17 257)"></i><i class="mk" style="left:${pc}%"></i></div></div><div class="xph"><div><p class="a">AAMC Preparation</p><p class="b">${sh(as)} – ${sh(o.date)}</p></div><div class="xtrk"><i class="f" style="left:${pos(as)}%;right:0;background:oklch(60% .11 192)"></i><i class="mk" style="left:${pc}%"></i></div></div><div class="xph"><div><p class="a">Full-lengths</p></div><div class="xtrk">${T.filter(t=>t.t=='f').map(t=>`<i class="dt" style="left:${pos(t.date)}%"></i>`).join('')}<i class="mk" style="left:${pc}%"></i></div></div></div><div class="xax"><span style="left:0">${sh(start)}</span><span style="left:${pc}%;transform:translateX(-50%)">Today</span><span style="right:0">MCAT · ${sh(o.date)}</span></div></div></div>
+<div class="xcol"><div class="xcard"><h3>Progress</h3><div class="xpl">${pr(TY.k[0]+' chapters','k',kt.filter(t=>t.done).length,kt.length)}${pr('UWorld questions','u',cnt('u'),tn('u'))}${pr('AAMC questions','a',cnt('a'),tn('a'))}${pr('Full-length exams','f',T.filter(t=>t.t=='f'&&t.done).length,T.filter(t=>t.t=='f').length)}${tn('dc')?pr('Khan doc pages','dc',cnt('dc'),tn('dc')):''}${tn('cs')?pr('Your resources','cs',cnt('cs'),tn('cs')):''}</div><dl class="xdl"><div><dt>Hours studied</dt><dd>${Math.round(hrs)}</dd></div><div><dt>Tasks completed</dt><dd>${T.filter(t=>t.done).length}</dd></div><div><dt>Anki cards</dt><dd>${cnt('an').toLocaleString()}</dd></div><div><dt>CARS passages</dt><dd>${cnt('c')}</dd></div></dl></div>
+<div class="xcard"><h3>Full-length scores</h3><p class="xsub">Scores appear here after your first full-length. Check one off to record section scores.</p></div>
+<div class="xcard"><h3>Workload check</h3><div class="xwk"><span>${ovr?'Over capacity':'On track'}</span><span>${Math.round(need/60)}h of ${Math.round(free/60)}h free</span></div><div class="xbar" style="--c:${ovr?'var(--xdes)':'oklch(60% .15 150)'}"><i style="width:${Math.min(100,100*need/Math.max(1,free))}%"></i></div><p class="xsub" style="font-size:12px;line-height:16px;margin-top:-10px">Remaining ${TY.k[0]}, UWorld, and AAMC work versus open study time after Anki, CARS, and full-lengths.</p>${ovr?`<div class="xwr">${xi('triangle-alert',16)}<div><p class="w1">${dm(need-free)} of work doesn't fit before test day</p><p class="w2">Add about ${dm((need-free)/Math.max(1,sd))} per study day, unblock days, or trim your resource list.</p></div></div>`:''}<a class="xbtn" href="#/app/setup" style="width:100%">Adjust plan</a></div></div></div></div>`}
+function appView(u,tab){if(tab=='plan')tab='today';TY.k[0]=PROV[(u.plan&&u.plan.cfg&&u.plan.cfg.prov)||'kaplan'].n;
+const N=[['today','Today'],['calendar','Calendar'],['progress','Progress'],['anki','Anki sync'],['setup','Plan setup'],['exams','Practice exams'],['weak','Weakness tracker']],has=!!u.plan,left=has?Math.max(0,Math.round((P(u.plan.opts.date)-P(iso(new Date())))/864e5)):null;
+if(!has&&['today','calendar','progress','anki','setup','exams','weak'].includes(tab)){A.innerHTML=onboarding();return}let b;b=tab=='today'?today(u):tab=='calendar'?plan(u):tab=='progress'?prog(u):tab=='anki'?'<div class="card"><h3>Anki sync</h3><p class="sm" style="margin-top:12px">Automatic sync isn\u2019t available yet. For now, log cards with the + button on your Anki task in Today.</p></div>':tab=='setup'?wizard():tab=='exams'?exams(u):tab=='weak'?weak(u):tab=='practice'?practice(u):settings(u);
+A.innerHTML=`<div class="shell"><aside class="sb"><a class="brand" href="#"><span class="lg2"><svg viewBox="410 190 925 500" aria-hidden="true"><path d="M459 655C459 600 480 550 510 510C480 430 470 330 478 270C485 230 510 222 540 235C610 265 670 330 725 395C790 372 850 365 888 365C930 365 990 372 1048 395C1105 330 1170 265 1235 235C1265 222 1290 230 1297 270C1305 330 1295 430 1265 510C1295 550 1315 600 1315 655" style="stroke-width:58;stroke-linecap:round;stroke-linejoin:round"/></svg></span>StudyCat</a>${N.map(n=>`<a class="nv ${n[0]==tab?'on':''}" href="#/app/${n[0]}">${ic(n[0])}${n[1]}</a>`).join('')}${has?`<div class="mc">MCAT in<b>${left} <small>days</small></b>${fmt(u.plan.opts.date,{weekday:'short',month:'long',day:'numeric',year:'numeric'})}</div>`:'<div style="margin-top:auto"></div>'}<div class="sbf"><button data-a="out">Log out</button><button data-a="reset">Reset plan</button></div></aside><div class="mn"><header class="xtop"><div>Adaptive MCAT study planner</div><div class="xtr2"><span>${xi('cloud-check',14)}All changes saved</span><button data-a="dark" aria-label="Toggle dark mode">${xi('moon',16)}</button></div></header><div class="xct">${['today','calendar','progress','setup','exams','weak'].includes(tab)?b:`<div class="ct">${b}</div>`}</div></div></div>`}
+const xtk=t=>{const c=TY[t.t][1];return `<div class="xtk ${c} ${t.done?'dn':''}"><i class="xs"></i><input type="checkbox" class="xcb" data-a="tog" data-id="${t.id}" ${t.done?'checked':''} aria-label="Mark ${esc(t.label)} done"><div class="xtb"><p class="xt1">${t.label}</p><p class="xt2">${t.desc||''}</p><div class="xm"><span class="l">${TY[t.t][0]}</span><span class="c">${xi('clock',12)}${dm(t.min)}</span></div>${t.n?`<div class="xst"><button data-a="dec" data-id="${t.id}" aria-label="Fewer">${xi('minus',12)}</button><div class="xbar"><i style="width:${100*t.cnt/t.n}%"></i></div><button data-a="inc" data-id="${t.id}" aria-label="More">${xi('plus',12)}</button><span>${t.cnt} / ${t.n} ${t.unit}</span></div>`:''}</div></div>`};
+let cal={v:'month',f:iso(new Date())},dgid=null;
+const sh=t=>t.t=='k'?t.label.replace(/^(Kaplan|Princeton Review|Examkrackers) /,'').replace(/:.*/,''):t.t=='dc'?t.label.replace('Khan Academy doc: ','Khan doc '):t.t=='an'?'Anki':t.label;
+const tsOn=(u,d)=>u.plan.tasks.filter(t=>t.date==d),sm=a=>a.reduce((s,t)=>s+t.min,0);
+function rb(){const u=cu(),T=u.plan.tasks,o=u.plan.opts,td=iso(new Date()),bl=u.plan.bl||(u.plan.bl={}),ov=u.plan.ov||(u.plan.ov={}),ex=new Set(T.filter(t=>t.t=='f'||t.t=='fr').map(t=>t.date));
+const cp=d=>bl[d]?0:(ov[d]!=null?ov[d]:hf(o,d))*60,fut=[];for(let d=P(td);d<P(o.date);d=AD(d,1)){const s=iso(d);if(hf(o,s)>0&&!ex.has(s))fut.push(s)}
+const ld=d=>sm(tsOn(u,d)),tg=fut.filter(d=>!bl[d]);if(!tg.length)return;
+const mvt=t=>{const c=tg.filter(x=>x!=t.date);if(!c.length)return false;t.date=c.reduce((m,x)=>ld(x)/cp(x)<ld(m)/cp(m)?x:m,c[0]);t.moved=true;return true};
+fut.forEach(d=>{if(bl[d])tsOn(u,d).filter(t=>!t.done).forEach(mvt);else{let n=0;while(ld(d)>cp(d)&&n++<300){const t=tsOn(u,d).filter(t=>!t.done&&['k','u','a','dc','cs'].includes(t.t)).pop();if(!t||!mvt(t))break}}})}
+const pill=t=>`<div class="pl ${TY[t.t][1]} ${t.done?'dn':''}" draggable="${!t.done}" data-id="${t.id}">${sh(t)}</div>`;
+const tc=t=>{const c=TY[t.t][1];return `<div class="tk ${c} ${t.done?'dn':''}"><input type="checkbox" class="cb" data-a="tog" data-id="${t.id}" ${t.done?'checked':''} aria-label="Mark done"><div class="tbd"><b>${t.label}</b><p>${t.desc||''}</p><div class="meta"><span class="ty">${TY[t.t][0]}</span><span><svg class='clk' viewBox='0 0 24 24'><circle cx='12' cy='12' r='9'/><path d='M12 7v5l3 2'/></svg>${dm(t.min)}</span></div>${t.n?`<div class="st"><button data-a="dec" data-id="${t.id}">\u2212</button><div class="bar ${c}"><i style="width:${100*t.cnt/t.n}%"></i></div><button data-a="inc" data-id="${t.id}">+</button><span>${t.cnt}/${t.n} ${t.unit}</span></div>`:''}</div></div>`};
+function plan(u){const o=u.plan.opts,td=iso(new Date()),f=P(cal.f),v=cal.v,bl=u.plan.bl||{},ov=u.plan.ov||{},fs=(s,x)=>fmt(s,x);let ttl,body;
+const st=d=>bl[d]?'Blocked':hf(o,d)==0?'Rest':'';
+const mchip=t=>`<div class="xmp ${t.done?'dn':''}" data-t="${t.t}" draggable="${!t.done}" data-id="${t.id}">${sh(t)}</div>`;
+if(v=='month'){ttl=f.toLocaleDateString('en-US',{month:'long',year:'numeric'});const fi=new Date(f.getFullYear(),f.getMonth(),1),s0=AD(fi,-fi.getDay()),w=Math.ceil((fi.getDay()+new Date(f.getFullYear(),f.getMonth()+1,0).getDate())/7),cs=[];for(let i=0;i<w*7;i++)cs.push(iso(AD(s0,i)));
+body=`<div class="xmg">${'Sun Mon Tue Wed Thu Fri Sat'.split(' ').map(x=>`<div class="xmw">${x}</div>`).join('')}${cs.map(d=>{const ts=tsOn(u,d),tot=sm(ts),s=st(d);return `<div class="xmcell ${P(d).getMonth()!=f.getMonth()?'out':''} ${s?'rs':''}" data-d="${d}"><button class="xmt" data-a="cday" data-d="${d}"><span class="n ${d==td?'td':''}">${P(d).getDate()}</span><small>${tot?dm(tot):''}</small></button>${s=='Blocked'?'<p class="xmr">Blocked</p>':s&&!ts.length?'<p class="xmr">Rest day</p>':''}<div class="xmcs">${ts.slice(0,3).map(mchip).join('')}</div>${ts.length>3?`<button class="xmore" data-a="cday" data-d="${d}">+${ts.length-3} more</button>`:''}</div>`}).join('')}</div>`}
+else if(v=='week'){const s0=AD(f,-f.getDay()),ds=[0,1,2,3,4,5,6].map(i=>iso(AD(s0,i)));ttl=fs(ds[0],{month:'short',day:'numeric'})+' – '+fs(ds[6],{month:'short',day:'numeric',year:'numeric'});
+body=`<div class="xwg">${ds.map(d=>{const ts=tsOn(u,d),s=st(d);return `<div class="xwc ${s?'rs':''} ${d==td?'td':''}" data-d="${d}"><button class="xwh" data-a="cday" data-d="${d}"><span class="t"><span>${fs(d,{weekday:'short'})}</span><span>${s||dm(sm(ts))}</span></span><span class="nn">${P(d).getDate()}</span></button>${ts.map(t=>`<div class="xwt ${t.done?'dn':''}" data-t="${t.t}" draggable="${!t.done}" data-id="${t.id}"><p class="a1">${sh(t)}</p><p class="b1">${dm(t.min)}</p></div>`).join('')}</div>`}).join('')}</div>`}
+else{const d=cal.f,ts=tsOn(u,d),h=ov[d]!=null?ov[d]:hf(o,d),past=d<td,wd=fs(d,{weekday:'long'});ttl=fs(d,{weekday:'long',month:'long',day:'numeric',year:'numeric'});
+body=`<div class="xdg" data-d="${d}"><div class="xtl xdl2">${ts.map(xtk).join('')||'<div class="xcard"><p class="xsub">'+(st(d)=='Blocked'?'This day is blocked.':st(d)?'Rest day. Nothing scheduled.':'Nothing scheduled.')+'</p></div>'}</div><div class="xcard xdp"><div><p class="plh">Planned</p><p class="pvv">${dm(sm(ts))||'0m'}</p><div class="dlg">${[...new Set(ts.map(t=>t.t))].map(k=>`<span data-t="${k}"><i></i>${TY[k][0]}</span>`).join('')}</div></div><div class="dsec"><p class="dhh">Study hours this day</p><div class="stp"><button class="xib" data-a="chrs" data-n="-1" aria-label="Fewer hours" ${past?'disabled':''}>${xi('minus',16)}</button><b>${h}h</b><button class="xib" data-a="chrs" data-n="1" aria-label="More hours" ${past?'disabled':''}>${xi('plus',16)}</button></div><p class="nt">Overrides your usual ${wd} hours.</p></div><div class="dsec"><label class="xtg"><span class="a">Block this day</span><input type="checkbox" class="xsw" data-b="blk" ${bl[d]?'checked':''} ${past?'disabled':''}></label></div></div></div>`}
+return `<div class="xpg xcal"><div class="xcb2"><div class="xcl"><h1>Calendar</h1><button class="xib" data-a="cn" data-n="-1" aria-label="Previous">${xi('chevron-left',16)}</button><button class="xib" data-a="cn" data-n="1" aria-label="Next">${xi('chevron-right',16)}</button><button class="xbtn" data-a="ct">Today</button></div><div class="xseg">${['month','week','day'].map(x=>`<button class="${v==x?'on':''}" data-a="cv" data-v="${x}">${x[0].toUpperCase()+x.slice(1)}</button>`).join('')}</div></div><div class="xcs"><h2>${ttl}</h2><div class="xlg">${['k','u','a','f','fr','an','c','w'].concat(['dc','cs'].filter(k=>u.plan.tasks.some(t=>t.t==k))).map(k=>`<span class="xlc" data-t="${k}"><i></i>${TY[k][0]}</span>`).join('')}</div></div>${body}<p class="xnote">Drag any unfinished task to another day. Changing a day's hours or blocking it rebuilds the rest of your plan around it.</p></div>`}
+Object.assign(act,{cv(b){cal.v=b.dataset.v;route()},ct(){cal.f=iso(new Date());route()},cday(b){cal.f=b.dataset.d;cal.v='day';route()},
+cn(b){const n=+b.dataset.n,f=P(cal.f);cal.f=iso(cal.v=='month'?new Date(f.getFullYear(),f.getMonth()+n,1):AD(f,cal.v=='week'?7*n:n));route()},
+chrs(b){const u=cu(),p=u.plan,d=cal.f,ov=p.ov||(p.ov={});ov[d]=Math.max(1,Math.min(14,(ov[d]!=null?ov[d]:p.opts.hrs)+ +b.dataset.n));rb();save();route()}});
+A.addEventListener('change',e=>{if(e.target.dataset.b=='blk'){const p=cu().plan,bl=p.bl||(p.bl={});if(e.target.checked)bl[cal.f]=true;else delete bl[cal.f];rb();save();route()}});
+A.addEventListener('dragstart',e=>{const p=e.target.closest('[data-id][draggable="true"]');if(p){dgid=p.dataset.id;e.dataTransfer.setData('text/plain',dgid);e.dataTransfer.effectAllowed='move'}});
+A.addEventListener('dragover',e=>{if(dgid!=null&&e.target.closest('[data-d]'))e.preventDefault()});
+A.addEventListener('drop',e=>{const c=e.target.closest('[data-d]');if(dgid==null||!c)return;e.preventDefault();const t=cu().plan.tasks.find(x=>x.id==dgid);dgid=null;if(t&&!t.done&&c.dataset.d!=t.date){t.date=c.dataset.d;t.moved=true;save();route()}});
+const hf=(o,d)=>o.av?o.av[P(d).getDay()]:o.hrs,sx=(a,f)=>a.reduce((s,t)=>s+f(t),0),hx=m=>(Math.round(m/6)/10)+'h';
+const BK=[['Biology Review','Biology',12],['Biochemistry Review','Biochemistry',12],['General Chemistry Review','Gen Chem',12],['Organic Chemistry Review','Orgo',12],['Physics and Math Review','Physics',12],['Behavioral Sciences Review','Psych/Soc',12],['Critical Analysis and Reasoning Skills Review','CARS',10]],SJ=['Biology','Biochemistry','General Chemistry','Organic Chemistry','Physics','Psychology','Sociology','CARS'],
+MT=[['Official Guide Questions',120],['Biology Question Pack Vol. 1',120],['Biology Question Pack Vol. 2',120],['Chemistry Question Pack',120],['Physics Question Pack',120],['Section Bank \u00b7 Bio/Biochem',100],['Section Bank \u00b7 Chem/Phys',100],['Section Bank \u00b7 Psych/Soc',100],['CARS Question Pack Vol. 1',51],['CARS Question Pack Vol. 2',51],['CARS Diagnostic Tool',48,0]],
+FL=[['Blueprint FL 1','Blueprint'],['Blueprint FL 2','Blueprint'],['Blueprint FL 3','Blueprint'],['Kaplan FL 1','Kaplan'],['Kaplan FL 2','Kaplan'],['UWorld Self-Assessment 1','UWorld'],['UWorld Self-Assessment 2','UWorld'],['AAMC Sample Test (Unscored)','AAMC'],['AAMC FL 1','AAMC'],['AAMC FL 2','AAMC'],['AAMC FL 3','AAMC'],['AAMC FL 4','AAMC'],['AAMC FL 5','AAMC']];
+const CH={"kaplan": [["The Cell", "Reproduction", "Embryogenesis and Development", "The Nervous System", "The Endocrine System", "The Respiratory System", "The Cardiovascular System", "The Immune System", "The Digestive System", "Homeostasis", "The Musculoskeletal System", "Genetics and Evolution"], ["Amino Acids, Peptides, and Proteins", "Enzymes", "Nonenzymatic Protein Function and Protein Analysis", "Carbohydrate Structure and Function", "Lipid Structure and Function", "DNA and Biotechnology", "RNA and the Genetic Code", "Biological Membranes", "Carbohydrate Metabolism I", "Carbohydrate Metabolism II: Aerobic Respiration", "Lipid and Amino Acid Metabolism", "Bioenergetics and Regulation of Metabolism"], ["Atomic Structure", "The Periodic Table", "Bonding and Chemical Interactions", "Compounds and Stoichiometry", "Chemical Kinetics", "Equilibrium", "Thermochemistry", "The Gas Phase", "Solutions", "Acids and Bases", "Oxidation–Reduction Reactions", "Electrochemistry"], ["Nomenclature", "Isomers", "Bonding", "Analyzing Organic Reactions", "Alcohols", "Aldehydes and Ketones I: Electrophilicity and Oxidation–Reduction", "Aldehydes and Ketones II: Enolates", "Carboxylic Acids", "Carboxylic Acid Derivatives", "Nitrogen- and Phosphorus-Containing Compounds", "Spectroscopy", "Separations and Purifications"], ["Kinematics and Dynamics", "Work and Energy", "Thermodynamics", "Fluids", "Electrostatics and Magnetism", "Circuits", "Waves and Sound", "Light and Optics", "Atomic and Nuclear Phenomena", "Mathematics", "Reasoning About the Design and Execution of Research", "Data-Based and Statistical Reasoning"], ["Biology and Behavior", "Sensation and Perception", "Learning and Memory", "Cognition, Consciousness, and Language", "Motivation, Emotion, and Stress", "Identity and Personality", "Psychological Disorders", "Social Processes, Attitudes, and Behavior", "Social Interaction", "Social Thinking", "Social Structure and Demographics", "Social Stratification"], ["About CARS", "Analyzing Rhetoric", "Keywords", "Outlining the Passage", "Dissecting Arguments", "Formal Logic", "Understanding Passages", "Question and Answer Strategy", "Question Types I: Foundations of Comprehension Questions", "Question Types II: Reasoning Within the Text Questions", "Question Types III: Reasoning Beyond the Text Questions", "Effective Review of CARS"]], "pr": [["MCAT Basics", "Biology Strategy for the MCAT", "Biologically Important Molecules", "Molecular Biology", "Microbiology", "Eukaryotic Cells", "Genetics and Evolution", "The Nervous and Endocrine Systems", "The Circulatory, Lymphatic, and Immune Systems", "The Excretory and Digestive Systems", "The Muscular and Skeletal Systems", "The Respiratory System and the Skin", "The Reproductive Systems"], ["MCAT Basics", "Biochemistry Strategy for the MCAT", "Biochemistry Basics", "Amino Acids and Proteins", "Carbohydrates and Carbohydrate Metabolism", "Lipids", "Nucleic Acids"], ["MCAT Basics", "General Chemistry Strategy for the MCAT", "Chemistry Fundamentals", "Atomic Structure and Periodic Trends", "Bonding and Intermolecular Forces", "Thermodynamics", "Phases", "Gases", "Kinetics", "Equilibrium", "Acids and Bases", "Electrochemistry", "Arithmetic, Algebra, and Graphs", "Proportions", "Logarithms"], ["MCAT Basics", "Organic Chemistry Strategy for the MCAT", "Organic Chemistry Fundamentals", "Structure and Stability", "Lab Techniques: Separations and Spectroscopy", "Carbonyl Chemistry", "Biologically Important Molecules"], ["MCAT Basics", "Physics Strategy for the MCAT", "Kinematics", "Mechanics I", "Mechanics II", "Mechanics III", "Thermodynamics", "Fluids and Elasticity of Solids", "Electrostatics", "Electricity and Magnetism", "Oscillations and Waves", "Sound", "Light and Geometrical Optics", "Quantum Physics", "Arithmetic, Algebra, and Graphs", "Trigonometry", "Vectors", "Proportions", "Logarithms"], ["MCAT Basics", "Psychology and Sociology Strategy for the MCAT", "Research Methods and Study Design", "Sociological Theories and Social Institutions", "Culture, Demographics, and Social Inequality", "Social Psychology", "Personality, Motivation, and Emotion", "Psychological Disorders and Stress", "Learning, Memory, and Development", "Behavioral Neuroscience", "Sensation, Perception, and Cognition", "Biological Processes in the Brain"], ["MCAT Basics", "Introduction to MCAT Critical Analysis and Reasoning Skills", "Active Reading", "Question Types and Strategies", "The Process of Elimination and Attractors", "Ranking and Ordering the Passages", "Strategy and Tactics", "Refining Your Skills", "Final Preparation"]]};
+const PROV={kaplan:{n:'Kaplan',b:BK},pr:{n:'Princeton Review',b:[['Biology', 'Biology', 13], ['Biochemistry', 'Biochemistry', 7], ['General Chemistry', 'Gen Chem', 15], ['Organic Chemistry', 'Orgo', 7], ['Physics and Math', 'Physics', 19], ['Psychology and Sociology', 'Psych/Soc', 12], ['CARS', 'CARS', 9]]},none:{n:'Content review',b:[]}},
+FG=['AAMC','Blueprint','Kaplan','UWorld','Princeton Review','Other'],FRK=['Princeton Review','Blueprint','Kaplan','UWorld','Other','AAMC'],frk=x=>{const i=FRK.indexOf(x);return i<0?5:i},
+mkBooks=k=>PROV[k].b.map(x=>({n:x[0],s:x[1],c:x[2],on:true,done:[]})),eq=x=>esc(x).replace(/'/g,'&#39;');
+let dr=null,drB='',drU=null,bxo={};
+function defCfg(u){const o=u&&u.plan?u.plan.opts:null,t=new Date();return {date:o?o.date:iso(AD(t,90)),start:iso(t),light:true,av:o&&o.av?o.av.slice():[4,5,5,5,5,0,8],blocked:[],p1:true,hpc:2.5,finish:'',books:BK.map(b=>({n:b[0],s:b[1],c:b[2],on:true,done:[]})),prov:'kaplan',doc:{on:false,pages:300,done:0,mpp:3},cust:[],p2:true,ug:2400,ud:0,um:2.5,subj:SJ.slice(),p3:true,as:'',mats:MT.map(m=>({n:m[0],q:m[1],on:m[2]!==0})),fl:FL.map((f,i)=>({n:f[0],src:f[1],on:[0,1,3,8,9,10,11].includes(i)})),fd:[6],fh:7.5,fr:5,anki:true,ac:200,am:45,cars:true,cp:2,cm:15}}
+function dinit(u){if(drU!==db.cur||!dr){const c=JSON.parse(JSON.stringify(u.plan&&u.plan.cfg?u.plan.cfg:defCfg(u)));c.blocked=Object.keys(u.plan&&u.plan.bl||{}).sort();c.prov=c.prov||'kaplan';c.doc=c.doc||{on:false,pages:300,done:0,mpp:3};c.cust=c.cust||[];if(c.prov=='ek'){c.prov='kaplan';c.books=mkBooks('kaplan')}if(c.prov=='pr')c.books.forEach((b,i)=>{if(PROV.pr.b[i])b.c=PROV.pr.b[i][2]});dr=c;drB=JSON.stringify(c);drU=db.cur}}
+const kp=u=>u.plan?u.plan.tasks.filter(t=>t.done||t.cnt>0||t.date<iso(new Date())):[];
+function gen2(c,keep){const td=new Date();td.setHours(0,0,0,0);const st=P(c.start)>td?P(c.start):td,end=P(c.date),days=[],T=[];
+for(let d=new Date(st);d<end;d=AD(d,1)){const s=iso(d);if(c.av[d.getDay()]>0&&!c.blocked.includes(s)&&!(c.light&&iso(AD(end,-1))==s))days.push(s)}
+const n=days.length;if(!n)return T;let id=keep.reduce((m,t)=>Math.max(m,t.id),-1)+1;
+const add=(date,t,label,min,x)=>T.push(Object.assign({id:id++,date,t,label,min:Math.round(min),done:false,cnt:0},x));
+const dist=(list,tot,cb)=>{const m=list.length;if(!m||!tot)return;for(let j=0;j<m;j++){const q=Math.floor((j+1)*tot/m)-Math.floor(j*tot/m);if(q>0)cb(list[j],q)}};
+const sp=Math.max(1,c.finish&&P(c.finish)>st?days.filter(d=>d<=c.finish).length:Math.floor(n*.6)),fd=new Set(),fls=c.fl.filter(f=>f.on).slice().sort((x,y)=>frk(x.src)-frk(y.src));
+if(fls.length){let cand=[];for(let i=Math.min(sp,n-2);i<n-1;i++)if(i>=0&&c.fd.includes(P(days[i]).getDay()))cand.push(i);if(cand.length<fls.length){cand=[];for(let i=Math.max(0,Math.min(sp,n-2));i<n-1;i++)cand.push(i)}
+const k=Math.min(fls.length,cand.length);for(let j=0;j<k;j++){const i=cand[Math.floor((j+.5)*cand.length/k)];if(fd.has(days[i])||fd.has(days[i+1]))continue;fd.add(days[i]);fd.add(days[i+1]);add(days[i],'f',fls[j].n,c.fh*60,{desc:'Take it under real test conditions'});add(days[i+1],'fr','Review '+fls[j].n,c.fr*60,{desc:'Review every missed and guessed question'})}}
+const free=days.filter(d=>!fd.has(d));
+if(c.p1){const pvn=c.prov||'kaplan',dn=new Set(keep.filter(t=>t.t=='k'&&(t.pv||'kaplan')==pvn).map(t=>t.bk+'-'+t.ch)),qs=c.books.map((b,i)=>b.on?Array.from({length:b.c},(_,k)=>k+1).filter(k=>!b.done.includes(k)&&!dn.has(i+'-'+k)).map(k=>[i,k]):[]),list=[];
+for(let r=0;qs.some(q=>q[r]);r++)qs.forEach(q=>q[r]&&list.push(q[r]));let ci=0;dist(days.slice(0,sp).filter(d=>!fd.has(d)),list.length,(d,q)=>{for(let i=0;i<q;i++){const [bi,k]=list[ci++],b=c.books[bi],ky=b.s+' '+k;add(d,'k',PROV[pvn].n+' '+b.s+' Ch. '+k+(CH[pvn]&&CH[pvn][bi]&&CH[pvn][bi][k-1]?': '+CH[pvn][bi][k-1]:''),c.hpc*60,{desc:'Read, take notes, and do end-of-chapter questions',bk:bi,ch:k,pv:pvn})}})}
+if(c.doc&&c.doc.on){const kd=sx(keep.filter(t=>t.t=='dc'),t=>t.n||0),pgs=Math.max(0,(+c.doc.pages||0)-(+c.doc.done||0)-kd);let ptr=(+c.doc.done||0)+kd;dist(days.slice(0,sp).filter(d=>!fd.has(d)),pgs,(d,q)=>{add(d,'dc','Khan Academy doc: pp. '+(ptr+1)+'\u2013'+(ptr+q),q*(+c.doc.mpp||3),{desc:'Read and annotate, then summarize each section in your own words',n:q,unit:'pages'});ptr+=q})}
+if(c.p2){const rem=Math.max(0,c.ug-c.ud-sx(keep.filter(t=>t.t=='u'),t=>t.n||0)),sj=c.subj.length?c.subj:['mixed topics'];let si=0;dist(days.slice(0,Math.max(1,Math.round(n*.75))).filter(d=>!fd.has(d)),rem,(d,q)=>add(d,'u',q+' UWorld questions',q*c.um,{desc:'Focus: '+sj[si++%sj.length]+'. Review every explanation',n:q,unit:'questions'}))}
+if(c.p3){const ms=c.mats.filter(m=>m.on),rem=Math.max(0,sx(ms,m=>m.q)-sx(keep.filter(t=>t.t=='a'),t=>t.n||0)),as=c.as&&c.as>iso(st)?days.filter(d=>d>=c.as):days.slice(sp);let mi=0,left=ms.length?ms[0].q:0;
+dist(as.filter(d=>!fd.has(d)),rem,(d,q)=>{while(left<=0&&mi<ms.length-1){mi++;left=ms[mi].q}left-=q;add(d,'a',q+' AAMC questions',q*c.um,{desc:'From: '+(ms[mi]?ms[mi].n:'AAMC material')+'. Review every explanation',n:q,unit:'questions'})})}
+(c.cust||[]).forEach(r=>{const tot=Math.max(0,(+r.total||0)-(+r.done||0)-sx(keep.filter(t=>t.t=='cs'&&t.rid==r.id),t=>t.n||0));if(!tot||!r.name)return;const win=r.by&&r.by>iso(st)?days.filter(d=>d<=r.by):days.slice(0,Math.max(1,Math.round(n*.75)));dist(win.filter(d=>!fd.has(d)),tot,(d,q)=>add(d,'cs',r.name+': '+q+' '+(q==1?r.unit.replace(/s$/,''):r.unit),q*(+r.per||5),{desc:'Your own resource',n:q,unit:r.unit,rid:r.id}))});
+days.forEach(d=>{if(c.cars&&c.cp>0&&!fd.has(d)||c.cars&&c.cp>0&&!T.some(t=>t.date==d&&t.t=='f'))add(d,'c',c.cp+' CARS Passages',c.cp*c.cm,{desc:'Timed passages, then annotate why each answer is right',n:c.cp,unit:'passages'});
+if(c.anki)add(d,'an','Anki Reviews',c.am,{desc:"Clear today's due cards (about "+c.ac+")",n:c.ac,unit:'cards'})});
+return T}
+function applyCfg(u,c){const keep=kp(u),T=keep.concat(gen2(c,keep)),a=c.av.filter(x=>x>0),bl={};c.blocked.forEach(d=>bl[d]=true);
+u.plan={cfg:JSON.parse(JSON.stringify(c)),opts:{date:c.date,hrs:a.length?sx(a,x=>x)/a.length:4,rest:-1,av:c.av.slice()},tasks:T,bl,ov:u.plan&&u.plan.ov||{}}}
+function pvw(c,u){const td=iso(new Date()),keep=kp(u),T=keep.concat(gen2(c,keep)),fu=T.filter(t=>t.date>=td),fx={};
+const need=sx(fu.filter(t=>!t.done&&['k','u','a','dc','cs'].includes(t.t)),t=>t.min);fu.forEach(t=>{if(['c','an','f','fr'].includes(t.t))fx[t.date]=(fx[t.date]||0)+t.min});
+let free=0,nd=0;for(let d=P(td);d<P(c.date);d=AD(d,1)){const s=iso(d);if(s<c.start||c.av[d.getDay()]<=0||c.blocked.includes(s)||(c.light&&iso(AD(P(c.date),-1))==s))continue;nd++;free+=Math.max(0,c.av[d.getDay()]*60-(fx[s]||0))}
+const rg=k=>{const a=fu.filter(t=>t.t==k).map(t=>t.date).sort();return a.length?fmt(a[0],{month:'short',day:'numeric'})+' \u2013 '+fmt(a[a.length-1],{month:'short',day:'numeric'}):''};
+return {need,free,nd,fl:fu.filter(t=>t.t=='f').length,k:rg('k'),a:rg('a'),fu}}
+const gp=p=>p.split('.').reduce((o,k)=>o[k],dr);
+function sp2(p,v){const k=p.split('.');let o=dr;for(let i=0;i<k.length-1;i++)o=o[k[i]];o[k[k.length-1]]=v}
+const tg=(p,v)=>`<input type='checkbox' class='xsw' data-p='${p}' ${v?'checked':''}>`,fid=p=>'f-'+p.replace(/\./g,'-'),inp=(l,p,v,ty,hint)=>`<div class='xf'><label for='${fid(p)}'>${l}</label><input id='${fid(p)}' class='xin' type='${ty||'number'}' data-p='${p}' value='${v}' step='any' min='0'>${hint?`<p class='xh'>${hint}</p>`:''}</div>`,ckb=(p,v,n,r)=>`<label class='xck'><input type='checkbox' class='xcbx' data-p='${p}' ${v?'checked':''}><span>${n}</span><small>${r||''}</small></label>`,phd=(dot,t,r)=>`<div class='xph2'><h3>${dot?`<i style='--c:var(--${dot})'></i>`:''}${t}</h3>${r||''}</div>`,inc=(p,v)=>`<label class='xinc'><span>Included</span>${tg(p,v)}</label>`;
+function wizard(){const u=cu();dinit(u);const c=dr,nw=!u.plan,dirty=nw||JSON.stringify(c)!=drB,pv=pvw(c,u),WD='Sun Mon Tue Wed Thu Fri Sat'.split(' '),over=pv.need>pv.free,gap=pv.need-pv.free;
+const chips=(p,arr,sel)=>`<div class='xchp'>${arr.map(x=>`<button class='${sel(x)?'on':''}' data-a='dpa' data-p='${p}' data-v='${x}'>${x}</button>`).join('')}</div>`;
+let uns='';if(over){const tl=pv.fu.filter(t=>!t.done&&['k','u','a','dc','cs'].includes(t.t)).sort((x,y)=>x.date<y.date?1:-1);let ex=gap;const r={k:0,u:0,a:0,dc:0,cs:0};for(const t of tl){if(ex<=0)break;ex-=t.min;if(t.t=='k')r.k++;else r[t.t]+=t.n||0}const ps=[];if(r.k)ps.push(r.k+' '+TY.k[0]+' chapter'+(r.k==1?'':'s'));if(r.dc)ps.push(r.dc+' Khan doc pages');if(r.cs)ps.push(r.cs+' units of your own resources');if(r.u)ps.push(r.u+' UWorld questions');if(r.a)ps.push(r.a+' AAMC questions');uns=ps.length?'Unscheduled: '+ps.join(', ')+'. ':''}
+const sel=(l,p,v,o)=>`<div class='xf'><label for='${fid(p)}'>${l}</label><select id='${fid(p)}' class='xin' data-p='${p}'>${o.map(x=>{const ov=Array.isArray(x)?x[0]:x,ol=Array.isArray(x)?x[1]:x;return `<option value='${ov}' ${ov==v?'selected':''}>${ol}</option>`}).join('')}</select></div>`;
+const ph=(t,d,k)=>`<li data-t='${k}'><i></i><div><p class='a1'>${t}</p>${d?`<p class='b1'>${d}</p>`:''}</div></li>`;
+return `<div class='xpg xset'><div class='xhh1'><h1>Plan setup</h1><p>Tell StudyCat what you have to work with. Saving rebuilds every day from today forward — anything you've already checked off is kept.</p></div><div class='xsg'><div class='xcol'>
+<section class='xcard'>${phd('', 'Exam & dates')}<div class='xg2'>${inp('MCAT date','date',c.date,'date')}${inp('Study start date','start',c.start,'date')}</div><label class='xtg'><span><span class='a'>Keep the day before the exam light</span><span class='b'>Only a short review and test-day prep</span></span>${tg('light',c.light)}</label></section>
+<section class='xcard'>${phd('', 'Weekly availability',`<span class='xmu14'>${sx(c.av,x=>x)}h / week</span>`)}<div class='xavg'>${c.av.map((h,i)=>`<div class='xav ${h?'':'z'}'><span class='d'>${WD[i]}</span><b>${h}h</b><div class='s'><button data-a='dst' data-p='av.${i}' data-n='-1' aria-label='Less hours on ${WD[i]}' ${h<=0?'disabled':''}>${xi('minus',12)}</button><button data-a='dst' data-p='av.${i}' data-n='1' aria-label='More hours on ${WD[i]}'>${xi('plus',12)}</button></div></div>`).join('')}</div><div class='xbkb'><label for='bkd'>Blocked dates</label><div class='xbk'><input type='date' id='bkd' class='xin' style='width:190px'><button class='xbtn blk' id='bkb' data-a='bk' disabled>Block day</button></div><div class='xchp x'>${c.blocked.map(d=>`<button data-a='ub' data-v='${d}' aria-label='Unblock ${fmt(d)}'>${fmt(d)}${xi('x',12)}</button>`).join('')}</div></div></section>
+<section class='xcard'>${phd('ck','Phase 1 · Content review',inc('p1',c.p1))}<div class='xg2'>${inp('Hours per chapter','hpc',c.hpc)}${inp('Finish content by (optional)','finish',c.finish,'date')}</div><div class='xf'><label>Content review books</label><div class='xchp'>${[['kaplan','Kaplan'],['pr','Princeton Review'],['none','None']].map(x=>`<button class='${c.prov==x[0]?'on':''}' data-a='prov' data-v='${x[0]}'>${x[1]}</button>`).join('')}</div></div>${c.prov!='none'?`<p class='xsub'>Choose your ${PROV[c.prov].n} books and tick chapters you've already finished.</p><div class='xbl'>${c.books.map((b,i)=>`<div class='xbrow'><input type='checkbox' class='xcbx' data-p='books.${i}.on' ${b.on?'checked':''} aria-label='${eq(b.n)}'><span class='nm'>${b.n}</span><small>${b.done.length}/${b.c} done</small><button data-a='bx' data-i='${i}' aria-label='${bxo[i]?'Collapse':'Expand'} ${eq(b.n)}'>${xi(bxo[i]?'chevron-up':'chevron-down',16)}</button></div>${bxo[i]?`<div class='xbx'>${Array.from({length:b.c},(_,k)=>k+1).map(k=>{const t=(CH[c.prov]&&CH[c.prov][i]&&CH[c.prov][i][k-1])||'';return `<label class='xchr'><input type='checkbox' class='xcbx' data-a='dpa' data-p='books.${i}.done' data-v='${k}' ${b.done.includes(k)?'checked':''}><span><em>Ch. ${k}</em> ${esc(t)}</span></label>`}).join('')}</div>`:''}`).join('')}</div>`:`<p class='xsub'>No books will be scheduled. Add anything you study from under Your own resources.</p>`}<div class='xsb2'>${phd('cd','Khan Academy 300-page doc',tg('doc.on',c.doc.on)).replace('xph2','xph2 sm2')}${c.doc.on?`<div class='xg3'>${inp('Total pages','doc.pages',c.doc.pages)}${inp('Pages already read','doc.done',c.doc.done)}${inp('Minutes per page','doc.mpp',c.doc.mpp)}</div>`:`<p class='xh'>Turn this on to add reading blocks for the doc alongside your books. They are spread across your content review phase.</p>`}</div></section>
+<section class='xcard'>${phd('cu','Phase 2 · Practice questions (UWorld)',inc('p2',c.p2))}<div class='xg3'>${inp('Question goal','ug',c.ug)}${inp('Already completed','ud',c.ud)}${inp('Minutes per question','um',c.um,'number','Including review')}</div><div class='xf'><label>Subjects to rotate through</label>${chips('subj',SJ,x=>c.subj.includes(x))}</div></section>
+<section class='xcard'>${phd('ca','Phase 3 · AAMC preparation',inc('p3',c.p3))}<div class='xf'><label for='${fid('as')}'>Start AAMC material on (optional)</label><input id='${fid('as')}' class='xin' type='date' data-p='as' value='${c.as}' style='width:224px'><p class='xh'>Leave blank to fill the final weeks automatically</p></div><div class='xml'>${c.mats.map((m,i)=>ckb('mats.'+i+'.on',m.on,m.n,m.q+' Qs')).join('')}</div></section>
+<section class='xcard'>${phd('cf','Full-length exams',`<span class='xmu14'>${c.fl.filter(f=>f.on).length} selected</span>`)}<p class='xsub'>Tick the exams you own. They are placed through your plan from the first provider down, with AAMC always last because they are the most predictive. Each one is followed by a review day.</p>${FG.map(g=>{const ix=c.fl.map((f,i)=>[f,i]).filter(x=>x[0].src==g);if(!ix.length)return '';const on=ix.filter(x=>x[0].on).length;return `<div class='xfg'><div class='xfgh'><span class='nm'>${g}</span><small>${on} of ${ix.length} selected</small><button class='xbtn gh' data-a='flg' data-g='${g}' data-v='${on==ix.length?0:1}'>${on==ix.length?'Clear':'Select all'}</button></div><div class='xml'>${ix.map(x=>ckb('fl.'+x[1]+'.on',x[0].on,esc(x[0].n),x[0].cust?`<button type='button' class='xlnk' data-a='delfl' data-i='${x[1]}'>Remove</button>`:'')).join('')}</div></div>`}).join('')}<div class='xf'><label for='nfn'>Add your own exam</label><div class='xbk'><input id='nfn' class='xin' type='text' maxlength='60' placeholder='Exam name'><select id='nfs' class='xin' style='width:180px'>${FG.map(x=>`<option>${x}</option>`).join('')}</select><button class='xbtn' data-a='addfl'>Add exam</button></div></div><div class='xf'><label>Preferred testing days</label><div class='xchp'>${['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'].map((x,i)=>`<button class='${c.fd.includes(i)?'on':''}' data-a='dpa' data-p='fd' data-v='${i}'>${x}</button>`).join('')}</div></div><div class='xg2'>${inp('Hours per exam','fh',c.fh)}${inp('Hours to review each exam','fr',c.fr)}</div></section>
+<section class='xcard'>${phd('cx','Your own resources')}<p class='xsub'>Add anything else you study from, such as a video series, a tutor's worksheets or another question bank. StudyCat spreads it through your plan.</p>${c.cust.map((r,i)=>`<div class='xsb2'><div class='xph2 sm2'><h3>${r.name?eq(r.name):'New resource'}</h3><button class='xib xdel' data-a='delres' data-i='${i}' aria-label='Remove ${eq(r.name||'resource')}'>${xi('x',14)}</button></div><div class='xg2'>${inp('Name','cust.'+i+'.name',eq(r.name),'text')}${sel('Counted in','cust.'+i+'.unit',r.unit,[['chapters','Chapters'],['questions','Questions'],['pages','Pages'],['lessons','Lessons']])}</div><div class='xg3'>${inp('Total','cust.'+i+'.total',r.total)}${inp('Already done','cust.'+i+'.done',r.done)}${inp('Minutes per unit','cust.'+i+'.per',r.per)}</div>${inp('Finish by (optional)','cust.'+i+'.by',r.by||'','date')}</div>`).join('')}<div><button class='xbtn' data-a='addres'>${xi('plus',14)}Add a resource</button></div></section>
+<section class='xcard'>${phd('', 'Daily habits')}<div class='xsb2'>${phd('can','Anki every study day',tg('anki',c.anki)).replace('xph2','xph2 sm2')}<div class='xg2'>${inp('Daily reviews (cards)','ac',c.ac)}${inp('Minutes per day','am',c.am)}</div></div><div class='xsb2'>${phd('cc','Daily CARS practice',tg('cars',c.cars)).replace('xph2','xph2 sm2')}<div class='xg2'>${inp('Passages per day','cp',c.cp)}${inp('Minutes per passage','cm',c.cm,'number','Including review')}</div></div></section>
+</div><aside class='xcard xpv'><div class='hd'><h3>Plan preview</h3><p class='xsub'>Updates as you edit.</p></div><ul class='xphl'>${c.p1&&pv.k?ph('Content Review',pv.k,'k'):''}${c.p3&&pv.a?ph('AAMC Preparation',pv.a,'a'):''}${ph(pv.fl+' full-length'+(pv.fl==1?'':'s')+' ahead','','f')}</ul><div class='kv'><p><span>Work remaining</span><b>${Math.round(pv.need/60)}h</b></p><p><span>Open study time</span><b>${Math.round(pv.free/60)}h</b></p></div><div class='wn ${over?'':'ok'}'>${over?xi('triangle-alert',16):xi('check',16)}<div><p class='a1'>${over?dm(gap)+" of work doesn't fit before test day":'Everything fits before test day'}</p>${over?`<p class='b1'>${uns}Add about ${dm(gap/Math.max(1,pv.nd))} per study day, unblock days, or trim your resource list.</p>`:''}</div></div><div class='btns'><button class='xbtn pr' data-a='sv' ${dirty?'':'disabled'}>${nw?'Save & build plan':'Save & rebuild plan'}</button>${nw?'':`<button class='xbtn gh' data-a='ds' ${dirty?'':'disabled'}>Discard changes</button>`}</div></aside></div></div>`}
+
+/* ===== practice exams + weakness tracker ===== */
+const SC4=[['CP','Chem/Phys'],['CARS','CARS'],['BB','Bio/Biochem'],['PS','Psych/Soc']],EXN=['AAMC FL 1','AAMC FL 2','AAMC FL 3','AAMC FL 4','AAMC FL 5','AAMC Sample Test (Unscored)','Blueprint FL 1','Blueprint FL 2','Blueprint FL 3','Kaplan FL 1','Kaplan FL 2','UWorld Self-Assessment 1','UWorld Self-Assessment 2','Other'];
+function scChart(sc,tgt){const W=1054,H=250,L=40,R=16,T=24,B=30,lo=472,hi=528,n=sc.length,x=i=>n==1?(L+W-R)/2:L+i*(W-L-R)/(n-1),y=v=>T+(hi-Math.max(lo,Math.min(hi,v)))/(hi-lo)*(H-T-B);
+const ticks=[472,480,488,496,504,512,520,528].map(v=>`<line class="gl" x1="${L}" x2="${W-R}" y1="${y(v)}" y2="${y(v)}"/><text class="ax" x="${L-8}" y="${y(v)+4}" text-anchor="end">${v}</text>`).join('');
+const pts=sc.map((e,i)=>`${x(i)},${y(e.total)}`).join(' ');
+const step=Math.ceil(n/10);
+return `<svg class="xsc" viewBox="0 0 ${W} ${H}" role="img" aria-label="Score trend across ${n} exams">${ticks}<line class="tg" x1="${L}" x2="${W-R}" y1="${y(tgt)}" y2="${y(tgt)}"/><text class="tgt" x="${L+6}" y="${y(tgt)-6}" text-anchor="start">Target ${tgt}</text>${n>1?`<polyline class="ln" points="${pts}"/>`:''}${sc.map((e,i)=>`<circle class="dt" cx="${x(i)}" cy="${y(e.total)}" r="4.5"/><text class="vl" x="${x(i)}" y="${y(e.total)-10}" text-anchor="middle">${e.total}</text>${i%step==0?`<text class="ax" x="${x(i)}" y="${H-8}" text-anchor="middle">${fmt(e.date,{month:'short',day:'numeric'})}</text>`:''}`).join('')}</svg>`}
+function exams(u){const sc=(u.scores||[]).slice().sort((a,b)=>a.date<b.date?-1:a.date>b.date?1:a.id-b.id),tg=u.target||510,last=sc[sc.length-1],best=sc.reduce((m,e)=>Math.max(m,e.total),0),l3=sc.slice(-3),avg=l3.length?Math.round(l3.reduce((t,e)=>t+e.total,0)/l3.length):0,td=iso(new Date());
+const dl=(last&&sc.length>1)?last.total-sc[sc.length-2].total:null,gp=last?tg-last.total:null;
+return `<div class="xpg xexm"><div class="xhh1"><h1>Practice exams</h1><p>Log every full-length and watch your score move toward your target.</p></div>
+<div class="xs4"><div class="xcard"><p class="l">${xi('trophy',14)}Latest score</p><p class="v">${last?last.total:'—'}</p></div><div class="xcard"><p class="l">${xi('flame',14)}Best score</p><p class="v">${best||'—'}</p></div><div class="xcard"><p class="l">${xi('chart-line',14)}Average of last 3</p><p class="v">${avg||'—'}</p></div><div class="xcard"><label class="l" for="tgin">${xi('target',14)}Target score</label><input id="tgin" class="xin tgi" type="number" min="472" max="528" value="${tg}" data-tg="1" aria-label="Target score"></div></div>
+<div class="xcard xpc"><div class="xhh2"><h3>Score trend</h3><p class="xsub">${last?(dl==null?'First exam logged.':`Latest exam is ${dl>=0?'up':'down'} ${Math.abs(dl)} from the one before. `)+(gp>0?`${gp} points to your target.`:'You are at or above your target.'):'Log your first full-length to see your trend.'}</p></div>${sc.length?scChart(sc,tg):'<p class="xsub xemp">No scores yet. Add one below.</p>'}</div>
+<div class="xg2c"><form class="xcard xpc" data-f="addExam" novalidate><div class="xhh2"><h3>Log an exam</h3><p class="xsub">Section scores run from 118 to 132. The total is added up for you.</p></div><div class="xg2"><div class="xf"><label for="exn">Exam</label><select id="exn" name="name" class="xin">${EXN.map(x=>`<option>${x}</option>`).join('')}</select></div><div class="xf"><label for="exd">Date taken</label><input id="exd" name="date" type="date" class="xin" value="${td}" max="${td}"></div></div><div class="xg4">${SC4.map(x=>`<div class="xf"><label for="s${x[0]}">${x[0]}</label><input id="s${x[0]}" name="${x[0]}" type="number" min="118" max="132" class="xin" placeholder="118–132" inputmode="numeric"></div>`).join('')}</div><div class="xf"><label for="exnote">Notes (optional)</label><input id="exnote" name="note" type="text" class="xin" maxlength="120" placeholder="What went wrong or right"></div><p class="xerr" id="exerr" role="alert"></p><div><button class="xbtn pr" type="submit">Save score</button></div></form>
+<div class="xcard xpc"><div class="xhh2"><h3>History</h3><p class="xsub">Newest first.</p></div>${sc.length?`<table class="xtb2"><thead><tr><th>Exam</th>${SC4.map(x=>`<th>${x[0]}</th>`).join('')}<th>Total</th><th><span class="xsr">Remove</span></th></tr></thead><tbody>${sc.slice().reverse().map(e=>`<tr><td><span class="xen">${esc(e.name)}</span><span class="xed">${fmt(e.date,{month:'short',day:'numeric',year:'numeric'})}</span></td>${e.sec.map(v=>`<td>${v}</td>`).join('')}<td><b>${e.total}</b></td><td><button class="xib xdel" data-a="delExam" data-id="${e.id}" aria-label="Remove ${esc(e.name)}">${xi('x',14)}</button></td></tr>`).join('')}</tbody></table>`:'<p class="xsub xemp">Nothing logged yet.</p>'}</div></div></div>`}
+function wkAgg(u){const m={};(u.weak||[]).filter(w=>!w.res).forEach(w=>{const k=w.sec+'|'+w.topic.toLowerCase(),g=m[k]||(m[k]={k,sec:w.sec,topic:w.topic,n:0,src:[],sch:true,last:''});g.n++;if(!g.src.includes(w.src))g.src.push(w.src);if(!w.sch)g.sch=false;if(w.date>g.last)g.last=w.date});return Object.values(m).sort((a,b)=>b.n-a.n||(a.last<b.last?1:-1))}
+const WS=[['Bio/Biochem','--cc'],['Chem/Phys','--cf'],['Psych/Soc','--can'],['CARS','--cu']],WSRC=['UWorld','AAMC full-length','AAMC question pack','Kaplan','Other'];
+function weak(u){const ag=wkAgg(u),mx=ag.reduce((m,a)=>Math.max(m,a.n),1),td=iso(new Date());
+return `<div class="xpg xweak"><div class="xhh1"><h1>Weakness tracker</h1><p>Log topics you miss. The ones that keep coming back rise to the top, and you can schedule a review for any of them.</p></div>
+<div class="xg2c"><form class="xcard xpc" data-f="addWeak" novalidate><div class="xhh2"><h3>Log a missed topic</h3><p class="xsub">Add one each time you miss a question on it.</p></div><div class="xf"><label for="wt">Topic</label><input id="wt" name="topic" type="text" class="xin" maxlength="80" placeholder="Enzyme inhibition types"></div><div class="xg2"><div class="xf"><label for="ws">Section</label><select id="ws" name="sec" class="xin">${WS.map(x=>`<option>${x[0]}</option>`).join('')}</select></div><div class="xf"><label for="wsr">Where you missed it</label><select id="wsr" name="src" class="xin">${WSRC.map(x=>`<option>${x}</option>`).join('')}</select></div></div><p class="xerr" id="wkerr" role="alert"></p><div><button class="xbtn pr" type="submit">Add topic</button></div></form>
+<div class="xcard xpc"><div class="xhh2"><h3>Review first</h3><p class="xsub">${ag.length?`${ag.length} open topic${ag.length==1?'':'s'}, most missed first.`:'Nothing logged yet.'}</p></div>${ag.length?`<div class="xwkl">${ag.map(a=>{const c=(WS.find(x=>x[0]==a.sec)||WS[0])[1];return `<div class="xwki" style="--c:var(${c})"><div class="top"><span class="l"><i></i>${esc(a.topic)}</span><span class="n">Missed ${a.n}×</span></div><div class="xbar"><i style="width:${100*a.n/mx}%"></i></div><div class="bt"><span class="m">${a.sec} · ${a.src.join(', ')}</span><span class="ac"><button class="xbtn" data-a="wkSch" data-k="${esc(a.k)}" ${a.sch?'disabled':''}>${a.sch?'Review scheduled':'Schedule review'}</button><button class="xbtn gh" data-a="wkDone" data-k="${esc(a.k)}">Mastered</button></span></div></div>`}).join('')}</div>`:'<p class="xsub xemp">Log a topic on the left to start your list.</p>'}</div></div></div>`}
+function nextFree(u){const o=u.plan.opts,bl=u.plan.bl||{},ex=new Set(u.plan.tasks.filter(t=>t.t=='f'||t.t=='fr').map(t=>t.date));for(let i=0;i<120;i++){const d=iso(AD(new Date(),i));if(d>=o.date)break;if(hf(o,d)>0&&!bl[d]&&!ex.has(d))return d}return null}
+Object.assign(act,{
+prov(b){const k=b.dataset.v;if(dr.prov==k)return;dr.prov=k;dr.books=mkBooks(k);bxo={};rr()},
+flg(b){dr.fl.forEach(f=>{if(f.src==b.dataset.g)f.on=b.dataset.v=='1'});rr()},
+addfl(){const n=A.querySelector('#nfn').value.trim();if(!n)return;dr.fl.push({n,src:A.querySelector('#nfs').value,on:true,cust:true});rr()},
+delfl(b){dr.fl.splice(+b.dataset.i,1);rr()},
+addres(){dr.cust.push({id:Date.now()%1000000000,name:'My resource',unit:'chapters',total:10,done:0,per:30,by:''});rr()},
+delres(b){dr.cust.splice(+b.dataset.i,1);rr()},
+addExam(f){const u=cu(),v=n=>f.elements[n].value.trim(),sec=SC4.map(x=>Math.round(+v(x[0]))),er=A.querySelector('#exerr');
+if(sec.some(x=>!(x>=118&&x<=132))){er.textContent='Enter all four section scores, each between 118 and 132.';return}
+if(!v('date')){er.textContent='Pick the date you took the exam.';return}
+const L=u.scores||(u.scores=[]);L.push({id:L.reduce((m,e)=>Math.max(m,e.id),0)+1,name:v('name'),date:v('date'),sec,total:sec.reduce((a,b)=>a+b,0),note:v('note')});save();rr()},
+delExam(b){const u=cu();u.scores=(u.scores||[]).filter(e=>e.id!=b.dataset.id);save();rr()},
+addWeak(f){const u=cu(),t=f.elements.topic.value.trim().replace(/\s+/g,' '),er=A.querySelector('#wkerr');if(!t){er.textContent='Type the topic you missed.';return}
+const L=u.weak||(u.weak=[]);L.push({id:L.reduce((m,e)=>Math.max(m,e.id),0)+1,topic:t,sec:f.elements.sec.value,src:f.elements.src.value,date:iso(new Date())});save();rr()},
+wkSch(b){const u=cu(),g=wkAgg(u).find(a=>a.k==b.dataset.k),d=nextFree(u);if(!g)return;if(!d){b.textContent='No open day left';b.disabled=true;return}
+const T=u.plan.tasks;T.push({id:T.reduce((m,t)=>Math.max(m,t.id),-1)+1,date:d,t:'w',label:'Weakness review: '+g.topic,min:30,done:false,cnt:0,desc:'Redo the questions you missed, then explain the idea in your own words'});
+(u.weak||[]).forEach(w=>{if(!w.res&&w.sec+'|'+w.topic.toLowerCase()==g.k)w.sch=true});save();rr()},
+wkDone(b){const u=cu();(u.weak||[]).forEach(w=>{if(w.sec+'|'+w.topic.toLowerCase()==b.dataset.k)w.res=true});save();rr()}});
+A.addEventListener('change',e=>{if(e.target.dataset.tg){const v=Math.max(472,Math.min(528,Math.round(+e.target.value)||510));cu().target=v;save();rr()}});
+let rrb=false;function rr(){if(rrb)return;rrb=true;try{const y=scrollY;route();scrollTo(0,y)}finally{rrb=false}}
+let ob=null,obU=null;
+function obInit(){const d=defCfg(null);ob={step:1,prov:'kaplan',doc:false,date:d.date,start:d.start,av:d.av.slice(),off:[],where:0,books:BK.map(()=>true),uw:true,aamc:true,anki:true,cars:true,ud:0,ug:2400,done:BK.map(()=>0),err:''};obU=db.cur}
+function onboarding(){if(!ob||obU!==db.cur)obInit();const o=ob,n=o.step,WD='Sun Mon Tue Wed Thu Fri Sat'.split(' '),last=n==6,e=o.err?`<p class="err">${o.err}</p>`:'';let b='';
+const ck=(k,v,t)=>`<label><input type="checkbox" data-o="${k}" ${v?'checked':''}>${t}</label>`;
+if(n==1)b=`<h2>Exam date</h2><div class="obg"><label>MCAT date<input type="date" data-o="date" value="${o.date}"></label><label>Start studying on<input type="date" data-o="start" value="${o.start}"></label></div>${e}`;
+if(n==2)b=`<h2>Availability</h2><p class="sub">Hours you can study on each day of a normal week. Use 0 for rest days.</p><div class="obav">${o.av.map((h,i)=>`<label>${WD[i]}<input type="number" min="0" max="24" step="0.5" data-o="av.${i}" value="${h}"></label>`).join('')}</div><p class="obtot" id="avt">${sx(o.av,x=>x)} hours a week</p>${e}`;
+if(n==3)b=`<h2>Days off</h2><p class="sub">Trips, holidays, shifts — any date you can’t study. You can skip this.</p><div class="obrow"><input type="date" id="obd"><button class="obadd" id="obaddb" data-a="obAdd" disabled>Add</button></div><div class="obch">${o.off.map(d=>`<button data-a="obDel" data-v="${d}">${fmt(d)} ✕</button>`).join('')}</div>`;
+if(n==4)b=`<h2>Where you are</h2>${[['Starting content review','Content review books, then practice questions and AAMC.'],['Done with content','Focus on UWorld, AAMC and full-lengths.'],['Final AAMC prep','AAMC material and full-lengths only.']].map((x,i)=>`<button class="opt2 ${o.where==i?'on':''}" data-a="obWhere" data-i="${i}"><b>${x[0]}</b><span>${x[1]}</span></button>`).join('')}`;
+if(n==5)b=`<h2>Resources</h2><div class="obh">Content review books</div><div class="obpv">${[['kaplan','Kaplan'],['pr','Princeton Review'],['none','None']].map(x=>`<button class="${o.prov==x[0]?'on':''}" data-a="obProv" data-v="${x[0]}">${x[1]}</button>`).join('')}</div><div class="obk2">${PROV[o.prov].b.map((k,i)=>ck('books.'+i,o.books[i],k[0])).join('')}</div><div class="obk2 gap">${ck('uw',o.uw,'UWorld')}${ck('aamc',o.aamc,'AAMC materials')}${ck('anki',o.anki,'Daily Anki')}${ck('cars',o.cars,'Daily CARS passages')}${ck('doc',o.doc,'Khan Academy 300-page doc')}</div><p class="obnote">We’ll schedule ${defCfg(null).fl.filter(f=>f.on).length} full-length exams on Saturdays. Change which ones in Plan setup.</p>`;
+if(n==6)b=`<h2>Progress so far</h2><div class="obg"><label>UWorld questions done<input type="number" min="0" data-o="ud" value="${o.ud}"></label><label>UWorld goal<input type="number" min="0" data-o="ug" value="${o.ug}"></label></div><div class="obh">${PROV[o.prov].n} chapters already finished</div><div class="obg" style="margin-top:6px">${PROV[o.prov].b.map((k,i)=>`<label>${k[1]} (of ${k[2]})<input type="number" min="0" max="${k[2]}" data-o="done.${i}" value="${o.done[i]}"></label>`).join('')}</div><p class="obnote s">Counts the first chapters of each book. Pick exact chapters later in Plan setup.</p><p class="obnote">Everything here can be changed later in Plan setup.</p>`;
+return `<div class="ob"><div class="in"><div class="obl"><span class="lg2"><svg viewBox="410 190 925 500" aria-hidden="true"><path d="M459 655C459 600 480 550 510 510C480 430 470 330 478 270C485 230 510 222 540 235C610 265 670 330 725 395C790 372 850 365 888 365C930 365 990 372 1048 395C1105 330 1170 265 1235 235C1265 222 1290 230 1297 270C1305 330 1295 430 1265 510C1295 550 1315 600 1315 655" style="stroke-width:58;stroke-linecap:round;stroke-linejoin:round"/></svg></span>StudyCat</div><div class="obs">Step ${n} of 6</div><div class="obp">${[1,2,3,4,5,6].map(i=>`<i class="${i<=n?'on':''}"></i>`).join('')}</div><div class="obcard">${b}<div class="obn"><button class="obb" data-a="obBack" ${n==1?'disabled':''}>Back</button><button class="obc" data-a="obNext">${last?'Build my plan':'Continue'}</button></div></div></div></div>`}
+Object.assign(act,{obNext(){const o=ob;o.err='';
+if(o.step==1){if(!o.date||!o.start)o.err='Pick both dates.';else if(o.date<=o.start||o.date<=iso(new Date()))o.err='Your MCAT date must be after your start date and after today.'}
+if(o.step==2&&o.av.every(x=>!x))o.err='Add study hours for at least one day.';
+if(o.err)return rr();
+if(o.step<6){o.step++;return rr()}
+const u=cu(),c=defCfg(null);c.date=o.date;c.start=o.start;c.av=o.av.slice();c.blocked=o.off.slice();c.p1=o.where==0;c.p2=o.uw&&o.where<2;c.p3=o.aamc;c.anki=o.anki;c.cars=o.cars;c.ud=o.ud;c.ug=o.ug;
+c.prov=o.prov;c.doc.on=!!o.doc;c.books=mkBooks(o.prov);c.books.forEach((k,i)=>{k.on=o.books[i];k.done=Array.from({length:Math.min(o.done[i],k.c)},(_,j)=>j+1)});
+applyCfg(u,c);ob=null;save();location.hash='#/app/today';route()},
+obProv(b){const k=b.dataset.v;ob.prov=k;ob.books=PROV[k].b.map(()=>true);ob.done=PROV[k].b.map(()=>0);rr()},obBack(){if(ob.step>1){ob.step--;ob.err='';rr()}},obWhere(b){ob.where=+b.dataset.i;rr()},
+obAdd(){const v=A.querySelector('#obd').value;if(v&&!ob.off.includes(v)){ob.off.push(v);ob.off.sort()}rr()},
+obDel(b){ob.off=ob.off.filter(x=>x!=b.dataset.v);rr()},
+reset(){cu().plan=null;ob=null;dr=null;save();location.hash='#/app/plan';route()}});
+A.addEventListener('change',e=>{const t=e.target,k=t.dataset.o;if(!k||!ob)return;const ch=t.type=='checkbox',v=ch?t.checked:t.type=='number'?Math.max(0,parseFloat(t.value)||0):t.value;
+if(k.startsWith('av.')){ob.av[+k.slice(3)]=Math.min(24,v);const x=A.querySelector('#avt');if(x)x.textContent=sx(ob.av,q=>q)+' hours a week'}
+else if(k.startsWith('books.'))ob.books[+k.slice(6)]=v;
+else if(k.startsWith('done.')){const i=+k.slice(5);ob.done[i]=Math.min(PROV[ob.prov].b[i][2],Math.floor(v))}
+else ob[k]=v;if(ch)rr()});
+A.addEventListener('input',e=>{if(e.target.id=='bkd'){const b=A.querySelector('#bkb');if(b)b.disabled=!e.target.value}if(e.target.id=='obd'){const b=A.querySelector('#obaddb');if(b)b.disabled=!e.target.value}});
+
+Object.assign(act,{dst(b){const i=+b.dataset.p.split('.')[1];dr.av[i]=Math.max(0,Math.min(14,dr.av[i]+ +b.dataset.n));rr()},dpa(b){const a=gp(b.dataset.p),v=isNaN(+b.dataset.v)?b.dataset.v:+b.dataset.v,i=a.indexOf(v);if(i<0)a.push(v);else a.splice(i,1);rr()},bx(b){bxo[b.dataset.i]=!bxo[b.dataset.i];rr()},bk(){const v=A.querySelector('#bkd').value;if(v&&!dr.blocked.includes(v)){dr.blocked.push(v);dr.blocked.sort()}rr()},ub(b){dr.blocked=dr.blocked.filter(x=>x!=b.dataset.v);rr()},ds(){dr=null;rr()},sv(){const u=cu(),nw=!u.plan;applyCfg(u,dr);dr=null;save();if(nw)location.hash='#/app/today';else rr()}});
+A.addEventListener('change',e=>{const t=e.target,p=t.dataset.p;if(!p||!dr)return;sp2(p,t.type=='checkbox'?t.checked:t.type=='number'?(parseFloat(t.value)||0):t.value);rr()});
+window.addEventListener('hashchange',()=>{if(!location.hash.endsWith('/setup'))dr=null});
+function prog(u){const T=u.plan.tasks,td=iso(new Date()),dn=t=>t.n?t.cnt/t.n:t.done?1:0,stm=t=>t.min*dn(t);
+const ds=[...new Set(T.filter(t=>t.date<=td).map(t=>t.date))].sort();let run=0,best=0;ds.forEach(d=>{if(tsOn(u,d).every(t=>t.done)){run++;best=Math.max(best,run)}else if(d!=td)run=0});
+const sched=T.filter(t=>t.date<=td),pct=Math.round(100*T.filter(t=>t.done).length/Math.max(1,sched.length)),w0=AD(P(td),-P(td).getDay()),wks=[];
+for(let i=7;i>=0;i--){const s=AD(w0,-7*i),a=iso(s),b=iso(AD(s,6)),ts=T.filter(t=>t.date>=a&&t.date<=b);wks.push({s:a,pl:sx(ts,t=>t.min),st:sx(ts,stm),ts})}
+const mx=Math.max(60,...wks.map(w=>w.pl)),cur=wks[7],dy=n=>n+' day'+(n==1?'':'s');
+const cat=['k','dc','cs','c','an','u','a','f','fr'].map(k=>{const ts=sched.filter(t=>t.t==k);if(!ts.length)return '';const p=Math.round(100*sx(ts,dn)/ts.length);return `<div class='xcr1' data-t='${k}'><div class='xcrow'><span class='l'><i></i>${TY[k][0]}</span><span class='n'>${p}% · ${ts.filter(t=>t.done).length}/${ts.length} tasks</span></div><div class='xbar'><i style='width:${p}%'></i></div></div>`}).join('');
+return `<div class='xpg xprg'><div class='xhh1'><h1>Progress</h1><p>How your real study compares with the plan. Work counts toward the day it was scheduled.</p></div>
+<div class='xs4'><div class='xcard'><p class='l'>${xi('flame',14)}Current streak</p><p class='v'>${dy(run)}</p></div><div class='xcard'><p class='l'>${xi('trophy',14)}Best streak</p><p class='v'>${dy(best)}</p></div><div class='xcard'><p class='l'>${xi('clock',14)}Hours studied</p><p class='v'>${dm(Math.round(sx(T,stm)))}</p></div><div class='xcard'><p class='l'>${xi('calendar-check',14)}Tasks completed</p><p class='v'>${pct}%</p></div></div>
+<div class='xcard xpc'><div class='xhh2'><h3>Weekly study hours</h3><p class='xsub'>Studied vs planned, last 8 weeks. This week so far: ${hx(cur.st)} of ${dm(cur.pl)}.</p></div><div class='xchart'><div class='xbars'>${wks.map(w=>{const h=Math.round(150*w.pl/mx);return `<div class='xbc'><span class='v'>${hx(w.st)}</span><div class='b' style='height:${h}px'><i style='height:${w.pl?100*w.st/w.pl:0}%'></i></div></div>`}).join('')}</div><div class='xbl2'>${wks.map(w=>`<span>${fmt(w.s,{month:'short',day:'numeric'})}</span>`).join('')}</div><div class='xlg2'><span><i class='s'></i>Studied</span><span><i class='p'></i>Planned</span></div></div></div>
+<div class='xg2c'><div class='xcard xpc'><div class='xhh2'><h3>Completion by category</h3><p class='xsub'>Everything scheduled up to today, including partial work.</p></div><div class='xcrs'>${cat||'<p class="xsub">Nothing scheduled yet.</p>'}</div></div><div class='xcard xpc'><div class='xhh2'><h3>Weekly output</h3><p class='xsub'>Chapters finished and UWorld + AAMC questions done.</p></div><table class='xtb2'><thead><tr><th>Week of</th><th>Chapters</th><th>Questions</th><th>On plan</th></tr></thead><tbody>${wks.slice().reverse().map(w=>{const up=w.ts.filter(t=>t.date<=td),pl=sx(up,t=>t.min);return `<tr><td>${fmt(w.s,{month:'short',day:'numeric'})}</td><td>${w.ts.filter(t=>t.t=='k'&&t.done).length}</td><td>${sx(w.ts.filter(t=>t.t=='u'||t.t=='a'),t=>t.cnt||0)}</td><td class='mu'>${pl?Math.round(100*sx(up,stm)/pl)+'%':'—'}</td></tr>`}).join('')}</tbody></table></div></div></div>`}
+function stp(b,s){const t=cu().plan.tasks.find(x=>x.id==b.dataset.id),k=t.unit=='cards'?10:t.unit=='pages'?5:1;t.cnt=Math.max(0,Math.min(t.n,t.cnt+s*k));t.done=t.cnt>=t.n;save();route()}
+function mv(inc){const u=cu(),T=u.plan.tasks,td=iso(new Date()),end=u.plan.opts.date,ex=new Set(T.filter(t=>t.t=='f'||t.t=='fr').map(t=>t.date));
+const fut=[...new Set(T.map(t=>t.date))].filter(d=>(inc?d>td:d>=td)&&d<end&&!ex.has(d));if(!fut.length)return;const load={};fut.forEach(d=>load[d]=0);T.forEach(t=>{if(load[t.date]!=null)load[t.date]+=t.min});
+T.filter(t=>!t.done&&(inc?t.date<=td:t.date<td)).sort((a,b)=>a.date<b.date?-1:1).forEach(t=>{const d=fut.reduce((m,x)=>load[x]<load[m]?x:m,fut[0]);t.date=d;t.moved=true;load[d]+=t.min});save();route()}
+Object.assign(act,{tog(b){const t=cu().plan.tasks.find(x=>x.id==b.dataset.id);t.done=b.checked;if(t.n)t.cnt=t.done?t.n:0;save();route()},inc(b){stp(b,1)},dec(b){stp(b,-1)},reb(b){mv(b.dataset.t=='1')},dark(){const r=document.documentElement;r.dataset.theme=r.dataset.theme=='dark'?'light':'dark'}});
+const toastEl=document.createElement('div');toastEl.className='xtoast';toastEl.setAttribute('role','status');toastEl.setAttribute('aria-live','polite');document.body.appendChild(toastEl);let toastT;
+function toast(m){toastEl.textContent=m;toastEl.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>toastEl.classList.remove('on'),2600)}
+function streak(T){const td=iso(new Date()),by={};T.forEach(t=>{(by[t.date]=by[t.date]||[]).push(t)});let n=0,d=new Date();const ok=x=>by[x]&&by[x].every(t=>t.done);if(!ok(iso(d)))d.setDate(d.getDate()-1);for(let i=0;i<400;i++){const k=iso(d);if(by[k]){if(!ok(k))break;n++}else if(i>0&&k<(T[0]&&T.reduce((m,t)=>t.date<m?t.date:m,'9999')))break;d.setDate(d.getDate()-1)}return n}
+const tog0=act.tog;act.tog=b=>{const u=cu(),t=u.plan.tasks.find(x=>x.id==b.dataset.id);tog0(b);if(t&&t.done){const day=u.plan.tasks.filter(x=>x.date==t.date),dn=day.filter(x=>x.done).length;if(dn==day.length){const n=streak(u.plan.tasks);toast('Day complete.'+(n>1?' '+n+' days in a row.':' Nice work.'))}else toast(dn+' of '+day.length+' done')}};
+const reb0=act.reb;act.reb=b=>{reb0(b);toast('Unfinished work moved to your remaining days')};
+act.pwt=b=>{const i=b.parentNode.querySelector('input'),h=i.type=='password';i.type=h?'text':'password';b.textContent=h?'Hide':'Show';b.setAttribute('aria-label',h?'Hide password':'Show password')};
+A.addEventListener('click',e=>{const b=e.target.closest('[data-a]');if(b&&b.dataset.a!='tog')act[b.dataset.a](b)});
+A.addEventListener('change',e=>{if(e.target.dataset.a=='tog')act.tog(e.target)});
+A.addEventListener('submit',e=>{e.preventDefault();act[e.target.dataset.f](e.target)});
+function route(){const h=location.hash;if(!h.startsWith('#/')){L.hidden=false;A.hidden=true;return}
+L.hidden=true;A.hidden=false;const u=db.cur&&db.users[db.cur],p=h.slice(2).split('/');
+if(p[0]=='login'||p[0]=='signup'){if(u){location.hash='#/app/plan';return}authView(p[0])}
+else if(p[0]=='app'){if(!u){location.hash='#/login';return}appView(u,p[1]||'plan')}else location.hash=''}
+function wire(){L.querySelectorAll('a[data-go]').forEach(a=>{const g=a.dataset.go;a.href=g=='login'?(db.cur?'#/app/plan':'#/login'):g=='practice'?(db.cur?'#/app/practice':'#/signup'):(db.cur?'#/app/plan':'#/signup')})}
+window.addEventListener('hashchange',()=>{window.scrollTo(0,0);wire();route()});wire();route();
+})();
+</script>
+<script>
+(function(){var L=document.getElementById('landing');if(!L)return;L.classList.add('lp-js');
+var els=[].slice.call(L.querySelectorAll('.lp-rv'));
+if('IntersectionObserver' in window){var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){var t=e.target;var d=[].indexOf.call(t.parentNode.children,t)*70;t.style.transitionDelay=d+'ms';t.classList.add('in');io.unobserve(t)}})},{threshold:.12,rootMargin:'0px 0px -6% 0px'});els.forEach(function(e){io.observe(e)})}else els.forEach(function(e){e.classList.add('in')});
+
+var days=L.querySelectorAll('.lp-days i');days.forEach(function(e,i){e.style.setProperty('--i',i)});
+var led=L.querySelectorAll('.lp-led dt');
+function cnt(el){var m=el.textContent.match(/^(\d+)(.*)$/);if(!m||matchMedia('(prefers-reduced-motion:reduce)').matches)return;var n=+m[1],t=null,suf=m[2];function f(ts){t=t||ts;var p=Math.min(1,(ts-t)/900),e=1-Math.pow(1-p,3);el.textContent=Math.round(n*e)+suf;if(p<1)requestAnimationFrame(f)}requestAnimationFrame(f)}
+var sv=L.querySelector('.lp-stv');if(sv&&'IntersectionObserver' in window){var o2=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){led.forEach(cnt);o2.disconnect()}})},{threshold:.4});o2.observe(sv)}
+L.addEventListener('click',function(e){var a=e.target.closest('a[href^="#"]');if(!a)return;var h=a.getAttribute('href');if(h.length<2||h.indexOf('#/')==0)return;var t=document.getElementById(h.slice(1));if(!t)return;e.preventDefault();t.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth',block:'start'})});
+var r=document.getElementById('lp-miss'),o=document.getElementById('lp-mo'),box=document.getElementById('lp-rb'),sum=document.getElementById('lp-sum');if(!r)return;
+var S=330,C={an:'--anki',k:'--kaplan',u:'--uworld'};
+function sg(c,n,m,x){return '<i class="lp-sg '+(x||'')+'" style="--c:var('+c+');width:'+(m/S*100).toFixed(2)+'%">'+n+'</i>'}
+function row(d,n,s,t){return '<div class="lp-dr"><div class="lp-dl">'+d+'<b>'+n+'</b></div><div class="lp-bar">'+s+'</div><div class="lp-tt">'+t+'</div></div>'}
+function u(){var n=+r.value,a=Math.ceil(n/3);o.textContent=n;
+var h=row('Mon',26,sg('--anki',S>0&&30>=S*.11?'Anki':'',30)+(n?sg('--uworld',n+' missed',n*6,'lp-miss'):''),'Anki done');
+[['Tue',27,'Chem 4'],['Wed',28,'Phys 1'],['Thu',29,'Phys 2']].forEach(function(d){var m=180+a*6;h+=row(d[0],d[1],sg('--anki','',30)+sg('--kaplan',d[2],90)+sg('--uworld','UWorld',60)+(a?sg('--uworld','+'+a,a*6,'lp-mv'):''),Math.floor(m/60)+'h '+('0'+m%60).slice(-2)+'m')});
+box.innerHTML=h;sum.textContent=n?a+' questions added to each remaining day':'Nothing to move'}
+r.addEventListener('input',u);u()})();
+</script>
+</body>
+</html>
+
+</body></html>
